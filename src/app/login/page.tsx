@@ -1,0 +1,451 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { RippleButton } from "@/components/ui/RippleButton";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+const loginSchema = z.object({
+  email: z.string().email("Enter a valid email address."),
+  password: z.string().min(6, "Password must be at least 6 characters."),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
+const stats = [
+  { label: "Active Creators", value: "10,000+" },
+  { label: "Brand Partners", value: "500+" },
+  { label: "Content Delivered", value: "50,000+" },
+];
+
+const testimonials = [
+  { text: "Streamlined our creator workflow by 10x", author: "Sarah Chen, Brand Director" },
+  { text: "Best platform for authentic content collaboration", author: "Marcus Lee, CEO" },
+];
+
+export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const router = useRouter();
+  const supabase = createClient();
+
+  async function onSubmit(data: LoginFormData) {
+    setLoading(true);
+    try {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      // If login is successful, router.push is not strictly necessary for protection, 
+      // but we can push to /brand/dashboard. Middleware will handle unauthorized/pending cases.
+      router.push("/brand/dashboard");
+      router.refresh(); // Refresh to ensure middleware catches the new session cookies properly
+    } catch (error: any) {
+      toast.error(error.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden flex flex-col lg:grid lg:grid-cols-[40%_60%]">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          animate={{ 
+            x: [0, 50, 0],
+            y: [0, 30, 0]
+          }}
+          transition={{ duration: 8, repeat: Infinity }}
+          className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-red-600/10 blur-3xl"
+        />
+        <motion.div 
+          animate={{ 
+            x: [0, -50, 0],
+            y: [0, -30, 0]
+          }}
+          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl"
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ duration: 6, repeat: Infinity }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-purple-600/5 blur-3xl"
+        />
+      </div>
+
+      {/* Left Section - Brand Showcase (Hidden on Mobile) */}
+      <section className="hidden lg:flex flex-col justify-center px-8 py-12 lg:px-12 lg:py-16 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="w-full space-y-8"
+        >
+          {/* Logo */}
+          <div className="space-y-4">
+            <motion.h1 
+              className="text-5xl font-bold tracking-tight lg:text-6xl"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="text-white">UGC</span>
+              <span className="bg-gradient-to-r from-red-500 via-red-600 to-blue-600 bg-clip-text text-transparent">
+                FY
+              </span>
+            </motion.h1>
+            <motion.p 
+              className="text-base text-slate-300 leading-relaxed max-w-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+            >
+              The premier platform where brands discover and collaborate with authentic creators to scale their content production.
+            </motion.p>
+          </div>
+
+          {/* Stats */}
+          <div className="space-y-5 pt-4">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                className="flex items-center gap-3 group"
+              >
+                <motion.div 
+                  className="flex-shrink-0"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                  {index === 0 && (
+                    <svg className="h-7 w-7 text-red-500 group-hover:text-red-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  )}
+                  {index === 1 && (
+                    <svg className="h-7 w-7 text-red-500 group-hover:text-red-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                    </svg>
+                  )}
+                  {index === 2 && (
+                    <svg className="h-7 w-7 text-red-500 group-hover:text-red-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                    </svg>
+                  )}
+                </motion.div>
+                <div>
+                  <div className="text-xl font-bold text-transparent bg-gradient-to-r from-red-500 to-blue-600 bg-clip-text">
+                    {stat.value}
+                  </div>
+                  <span className="text-xs font-medium text-slate-400">{stat.label}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Testimonials */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="space-y-3 pt-6 border-t border-slate-800"
+          >
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Loved by Brands</p>
+            <div className="space-y-3">
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1 }}
+                  className="rounded-lg border border-slate-800 bg-slate-800/30 p-3"
+                >
+                  <p className="text-xs text-slate-300 italic">&quot;{testimonial.text}&quot;</p>
+                  <p className="mt-2 text-xs font-medium text-slate-400">— {testimonial.author}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Trust Badges */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="flex items-center gap-3 flex-wrap pt-4"
+          >
+            <div className="flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800/30 px-3 py-1.5">
+              <span className="text-lg">✓</span>
+              <span className="text-xs text-slate-400">SOC 2 Certified</span>
+            </div>
+            <div className="flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800/30 px-3 py-1.5">
+              <span className="text-lg">🔒</span>
+              <span className="text-xs text-slate-400">Enterprise Secure</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Right Section - Login Form (Mobile & Desktop) */}
+      <section className="relative z-10 flex flex-col justify-between lg:justify-center px-6 py-8 sm:px-8 lg:px-16 lg:py-16 flex-1 lg:flex-none">
+        {/* Mobile Header */}
+        <motion.div 
+          className="lg:hidden mb-8"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h1 className="text-4xl font-bold">
+            <span className="text-white">UGC</span>
+            <span className="bg-gradient-to-r from-red-500 via-red-600 to-blue-600 bg-clip-text text-transparent">
+              FY
+            </span>
+          </h1>
+        </motion.div>
+
+        {/* Form Container */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="w-full max-w-sm mx-auto lg:mx-0 space-y-8"
+        >
+          {/* Form Header */}
+          <div className="space-y-2">
+            <motion.h2 
+              className="text-2xl sm:text-3xl font-bold text-white tracking-tight"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              Welcome Back
+            </motion.h2>
+            <motion.p 
+              className="text-sm text-slate-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Sign in to access your brand dashboard
+            </motion.p>
+          </div>
+
+          {/* Login Form */}
+          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+            {/* Email Input */}
+            <motion.div 
+              className="space-y-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <label htmlFor="email" className="block text-sm font-semibold text-slate-200">
+                Email Address
+              </label>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                {...register("email")}
+                className="w-full px-4 py-3.5 rounded-lg border border-slate-700 bg-slate-800/50 text-white placeholder-slate-500 transition duration-200 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 hover:border-slate-600"
+                placeholder="you@brand.com"
+              />
+              {errors.email && (
+                <motion.p 
+                  className="text-xs text-red-400 font-medium"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {errors.email.message}
+                </motion.p>
+              )}
+            </motion.div>
+
+            {/* Password Input */}
+            <motion.div 
+              className="space-y-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-200">
+                  Password
+                </label>
+                <motion.a 
+                  href="#" 
+                  className="text-xs text-red-500 hover:text-red-400 transition font-medium"
+                  whileHover={{ x: 2 }}
+                >
+                  Forgot?
+                </motion.a>
+              </div>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  {...register("password")}
+                  className="w-full px-4 py-3.5 rounded-lg border border-slate-700 bg-slate-800/50 text-white placeholder-slate-500 transition duration-200 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 hover:border-slate-600"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-slate-300 transition"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+              {errors.password && (
+                <motion.p 
+                  className="text-xs text-red-400 font-medium"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {errors.password.message}
+                </motion.p>
+              )}
+            </motion.div>
+
+            {/* Sign In Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <RippleButton
+                type="submit"
+                className="w-full mt-6 rounded-lg bg-gradient-to-r from-red-600 to-red-700 px-4 py-3.5 text-sm font-semibold text-white transition duration-300 hover:from-red-700 hover:to-red-800 hover:shadow-lg hover:shadow-red-600/30 disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Signing in...
+                  </span>
+                ) : (
+                  "Sign In"
+                )}
+              </RippleButton>
+            </motion.div>
+
+            {/* Divider */}
+            <motion.div 
+              className="relative my-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+            >
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-700" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-2 text-slate-500">
+                  Or continue with
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Google Button */}
+            <motion.button
+              type="button"
+              className="w-full rounded-lg border border-slate-700 bg-slate-800/30 px-4 py-3.5 text-sm font-medium text-slate-300 transition duration-200 hover:bg-slate-800 hover:border-slate-600 hover:text-white"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <svg className="h-4 w-4" viewBox="0 0 24 24">
+                  <path
+                    fill="currentColor"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  />
+                </svg>
+                Google
+              </div>
+            </motion.button>
+          </form>
+
+          {/* Sign Up Link */}
+          <motion.p 
+            className="text-center text-sm text-slate-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+          >
+            New to UGCFY?{" "}
+            <motion.a 
+              href="#" 
+              className="font-semibold text-red-500 hover:text-red-400 transition"
+              whileHover={{ x: 2 }}
+            >
+              Request Access
+            </motion.a>
+          </motion.p>
+        </motion.div>
+
+        {/* Mobile Bottom Info Section */}
+        <motion.div 
+          className="lg:hidden mt-12 pt-8 border-t border-slate-800 space-y-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
+        >
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Why Choose UGCFY</p>
+          <div className="grid grid-cols-3 gap-3">
+            {stats.map((stat, index) => (
+              <div key={stat.label} className="text-center">
+                <div className="text-lg font-bold text-transparent bg-gradient-to-r from-red-500 to-blue-600 bg-clip-text">
+                  {stat.value}
+                </div>
+                <span className="text-xs text-slate-400 line-clamp-1">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+    </main>
+  );
+}
