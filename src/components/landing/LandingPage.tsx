@@ -1423,43 +1423,243 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 11. CTA BANNER */}
-      <section id="cta-section" className="bg-[#000000] overflow-hidden relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center justify-between">
+      {/* 11. CTA BANNER / CREATOR NETWORK FINALE */}
+      <section id="cta-section" className="relative py-20 sm:py-24 lg:py-28 bg-[#070709] overflow-hidden border-t border-white/[0.08] select-none">
+        
+        {/* Subtle Background Grid Texture */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"
+        />
 
-          <div className="py-14 sm:py-16 md:py-20 lg:py-24 flex-1 z-20 w-full">
-            <h3 className="text-white font-bold text-lg md:text-xl mb-3 tracking-wide">
-              Let&apos;s make something cool
-            </h3>
-            <h2 className="text-3xl md:text-5xl lg:text-[56px] font-extrabold text-white mb-8 leading-[1.1] tracking-tight max-w-xl">
-              Start your success with UGCFY right now!
-            </h2>
-            <Link href="/get-started" className="bg-white text-black font-bold text-lg py-3 px-8 rounded-lg w-fit hover:bg-[#E11D48] hover:text-white transition-colors shadow-xl inline-block text-center">
-              Get Started
-            </Link>
-          </div>
+        {/* Sophisticated Layered Ambient Lighting */}
+        <div 
+          className="absolute top-1/2 left-0 -translate-y-1/2 w-[480px] h-[480px] bg-slate-800/[0.12] rounded-full blur-[140px] pointer-events-none" 
+          aria-hidden="true" 
+        />
+        <div 
+          className="absolute top-1/2 right-[-5%] -translate-y-1/2 w-[580px] h-[580px] bg-[var(--color-primary,#eb1948)]/[0.08] rounded-full blur-[150px] pointer-events-none" 
+          aria-hidden="true" 
+        />
+        <div 
+          className="absolute bottom-0 right-[20%] w-[380px] h-[380px] bg-purple-600/[0.05] rounded-full blur-[120px] pointer-events-none" 
+          aria-hidden="true" 
+        />
 
-          <div className="absolute right-0 top-0 bottom-0 w-full lg:w-[60%] flex items-center justify-end opacity-30 lg:opacity-100 pointer-events-none z-0">
-            {/* Gradient fade on the left to blend into the black background */}
-            <div className="absolute left-0 top-0 bottom-0 w-[60%] bg-gradient-to-r from-[#000000] via-[#000000]/80 to-transparent z-10 hidden lg:block"></div>
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 xl:px-14 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-10 xl:gap-14">
 
-            <div className="flex gap-3 md:gap-5 -rotate-12 translate-x-[20%] md:translate-x-[15%] scale-90 md:scale-100">
-              {/* Column 1 */}
-              <div className="flex flex-col gap-3 md:gap-5 -translate-y-16">
-                <Image src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80" alt="UGC Fashion Creator filming content" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-                <Image src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=400&q=80" alt="UGC Tech Creator setting up equipment" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+            {/* LEFT COLUMN: Confident Editorial Copy + Premium CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="flex-1 w-full max-w-xl lg:max-w-[520px] xl:max-w-[560px] text-left z-20"
+            >
+              {/* Refined Eyebrow */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-xs sm:text-[13px] font-semibold tracking-wider text-gray-300 uppercase mb-5 sm:mb-6 shadow-2xs backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary,#eb1948)] animate-pulse" />
+                <span>Let&apos;s make something cool</span>
               </div>
-              {/* Column 2 */}
-              <div className="flex flex-col gap-3 md:gap-5">
-                <Image src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=80" alt="UGC Lifestyle Creator vlogging outdoors" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-                <Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80" alt="UGC Beauty Creator recording a makeup tutorial" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
+
+              {/* Main Heading with Brand Accent on UGCFY */}
+              <h2 className="text-4xl sm:text-5xl lg:text-[56px] xl:text-[64px] font-extrabold lg:font-black text-white tracking-tight leading-[1.02] mb-8 sm:mb-9">
+                Start your success with{" "}
+                <span className="text-[var(--color-primary,#eb1948)] inline-block">
+                  UGCFY
+                </span>{" "}
+                right now!
+              </h2>
+
+              {/* Premium CTA Button */}
+              <div>
+                <Link
+                  href="/get-started"
+                  className="inline-flex items-center justify-center gap-3.5 h-[56px] sm:h-[60px] px-8 sm:px-9 rounded-2xl bg-white hover:bg-rose-50/95 text-gray-950 font-extrabold text-base sm:text-[17px] tracking-wide shadow-xl shadow-black/60 hover:shadow-2xl hover:shadow-rose-500/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50"
+                >
+                  <span>Get Started</span>
+                  <ArrowRight className="w-4 h-4 text-gray-950 group-hover:translate-x-1.5 transition-transform duration-300" />
+                </Link>
               </div>
-              {/* Column 3 */}
-              <div className="flex flex-col gap-3 md:gap-5 translate-y-16">
-                <Image src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="UGC Skincare Creator showing products" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-                <Image src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80" alt="UGC Fitness Creator taking a selfie" width={400} height={500} unoptimized className="rounded-2xl object-cover w-28 h-40 md:w-40 md:h-56 shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-white/10" />
-              </div>
+            </motion.div>
+
+            {/* RIGHT COLUMN: Creator Constellation Network */}
+            <div className="w-full lg:w-[52%] xl:w-[54%] relative flex items-center justify-center min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] xl:min-h-[560px]">
+              
+              {/* Background Concentric Orbital Rings */}
+              <div 
+                className="absolute w-[360px] sm:w-[460px] lg:w-[500px] h-[360px] sm:h-[460px] lg:h-[500px] rounded-full border border-white/[0.04] pointer-events-none" 
+                aria-hidden="true" 
+              />
+              <div 
+                className="absolute w-[260px] sm:w-[340px] lg:w-[380px] h-[260px] sm:h-[340px] lg:h-[380px] rounded-full border border-dashed border-rose-500/[0.1] pointer-events-none" 
+                aria-hidden="true" 
+              />
+
+              {/* Central Rose Ambient Focal Glow */}
+              <div 
+                className="absolute w-64 sm:w-80 h-64 sm:h-80 rounded-full bg-[var(--color-primary,#eb1948)]/10 blur-[80px] pointer-events-none" 
+                aria-hidden="true" 
+              />
+
+              {/* CARD 1: HERO Dominant Creator Portrait (Center / Right Focus) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ y: [-3, 3, -3] }}
+                style={{ transition: "transform 0.5s ease-out" }}
+                className="absolute z-20 top-[26%] sm:top-[28%] left-[45%] sm:left-[46%] -translate-x-1/2 -translate-y-1/2 w-[150px] sm:w-[185px] lg:w-[205px] xl:w-[220px] -rotate-2 hover:rotate-0 hover:scale-[1.04] transition-all duration-500 cursor-pointer group"
+              >
+                <div className="relative aspect-[4/5] rounded-[22px] sm:rounded-[26px] overflow-hidden border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] bg-gray-900 group-hover:border-white/30 transition-colors">
+                  <Image
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=85"
+                    alt="UGC Beauty Creator"
+                    fill
+                    sizes="(max-width: 768px) 45vw, 25vw"
+                    className="object-cover object-top filter contrast-[1.04] saturate-[1.05]"
+                  />
+                  {/* Subtle Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+
+                  {/* Micro In-Product Badge: 98% Match */}
+                  <div 
+                    aria-hidden="true"
+                    className="absolute bottom-3 left-3 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-[10px] sm:text-[11px] font-bold text-white shadow-lg"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>98% Match</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* CARD 2: Upper-Left Medium Creator Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ y: [3, -3, 3] }}
+                className="absolute z-10 top-[2%] sm:top-[4%] left-[2%] sm:left-[6%] lg:left-[8%] w-[125px] sm:w-[155px] lg:w-[170px] xl:w-[185px] rotate-[3.5deg] hover:rotate-0 hover:scale-[1.04] transition-all duration-500 cursor-pointer group"
+              >
+                <div className="relative aspect-[4/5.2] rounded-[20px] sm:rounded-[24px] overflow-hidden border border-white/12 shadow-[0_16px_40px_rgba(0,0,0,0.5)] bg-gray-900 group-hover:border-white/25 transition-colors">
+                  <Image
+                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=85"
+                    alt="UGC Fashion Creator"
+                    fill
+                    sizes="(max-width: 768px) 35vw, 20vw"
+                    className="object-cover object-top filter contrast-[1.04]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                </div>
+              </motion.div>
+
+              {/* CARD 3: Upper-Right Medium Creator Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ y: [-2, 2.5, -2] }}
+                className="absolute z-10 top-[0%] sm:top-[2%] right-[1%] sm:right-[4%] lg:right-[6%] w-[130px] sm:w-[160px] lg:w-[175px] xl:w-[190px] -rotate-[4deg] hover:rotate-0 hover:scale-[1.04] transition-all duration-500 cursor-pointer group"
+              >
+                <div className="relative aspect-[4/5] rounded-[20px] sm:rounded-[24px] overflow-hidden border border-white/12 shadow-[0_16px_40px_rgba(0,0,0,0.5)] bg-gray-900 group-hover:border-white/25 transition-colors">
+                  <Image
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=85"
+                    alt="UGC Skincare Creator"
+                    fill
+                    sizes="(max-width: 768px) 35vw, 20vw"
+                    className="object-cover object-top filter contrast-[1.04]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+
+                  {/* Micro In-Product Badge: Campaign Live */}
+                  <div 
+                    aria-hidden="true"
+                    className="absolute top-2.5 right-2.5 z-30 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-[9px] sm:text-[10px] font-bold text-rose-300 shadow-md"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    <span>Campaign Live</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* CARD 4: Lower-Left UGC Creator Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ y: [2.5, -2.5, 2.5] }}
+                className="absolute z-10 bottom-[2%] sm:bottom-[4%] left-[0%] sm:left-[3%] lg:left-[5%] w-[120px] sm:w-[150px] lg:w-[165px] xl:w-[178px] -rotate-[3deg] hover:rotate-0 hover:scale-[1.04] transition-all duration-500 cursor-pointer group"
+              >
+                <div className="relative aspect-[4/5] rounded-[20px] sm:rounded-[24px] overflow-hidden border border-white/12 shadow-[0_16px_40px_rgba(0,0,0,0.5)] bg-gray-900 group-hover:border-white/25 transition-colors">
+                  <Image
+                    src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=500&q=85"
+                    alt="UGC Lifestyle Creator"
+                    fill
+                    sizes="(max-width: 768px) 35vw, 20vw"
+                    className="object-cover object-top filter contrast-[1.04]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+
+                  {/* Micro In-Product Badge: Creator Selected */}
+                  <div 
+                    aria-hidden="true"
+                    className="absolute bottom-2.5 left-2.5 z-30 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-[9px] sm:text-[10px] font-bold text-white shadow-md"
+                  >
+                    <Check className="w-3 h-3 text-emerald-400 stroke-[2.5]" />
+                    <span>Selected</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* CARD 5: Lower-Right Creator Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ y: [-3, 3, -3] }}
+                className="absolute z-10 bottom-[3%] sm:bottom-[5%] right-[3%] sm:right-[7%] lg:right-[8%] w-[125px] sm:w-[155px] lg:w-[170px] xl:w-[185px] rotate-[3deg] hover:rotate-0 hover:scale-[1.04] transition-all duration-500 cursor-pointer group"
+              >
+                <div className="relative aspect-[4/5] rounded-[20px] sm:rounded-[24px] overflow-hidden border border-white/12 shadow-[0_16px_40px_rgba(0,0,0,0.5)] bg-gray-900 group-hover:border-white/25 transition-colors">
+                  <Image
+                    src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=500&q=85"
+                    alt="UGC Fitness Creator"
+                    fill
+                    sizes="(max-width: 768px) 35vw, 20vw"
+                    className="object-cover object-top filter contrast-[1.04]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                </div>
+              </motion.div>
+
+              {/* CARD 6: Lower-Center Tech/App UGC Accent Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ y: [1.5, -2, 1.5] }}
+                className="hidden sm:block absolute z-15 bottom-[0%] left-[48%] -translate-x-1/2 w-[90px] sm:w-[110px] lg:w-[125px] -rotate-1 hover:rotate-0 hover:scale-[1.05] transition-all duration-500 cursor-pointer group"
+              >
+                <div className="relative aspect-square rounded-[18px] sm:rounded-[22px] overflow-hidden border border-white/15 shadow-[0_12px_30px_rgba(0,0,0,0.6)] bg-gray-900 group-hover:border-white/30 transition-colors">
+                  <Image
+                    src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=400&q=80"
+                    alt="UGC Campaign Apps & Channels"
+                    fill
+                    sizes="15vw"
+                    className="object-cover filter contrast-[1.06]"
+                  />
+                  <div className="absolute inset-0 bg-black/20" />
+                </div>
+              </motion.div>
+
             </div>
+
           </div>
         </div>
       </section>
