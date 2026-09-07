@@ -25,16 +25,9 @@ export default function Footer() {
             <div className="flex items-center mb-6">
               <Image src="/brand/ugcfy-logo.png" alt="UGCFY" width={140} height={44} className="w-[115px] md:w-[140px] h-auto object-contain" />
             </div>
-            <p className="text-gray-500 text-[15px] leading-relaxed mb-8 max-w-sm">
+            <p className="text-gray-500 text-[15px] leading-relaxed max-w-sm">
               The ultra-premium creator platform for high-converting 9:16 video formats, authentic UGC, and automated influencer marketing.
             </p>
-            <div className="flex items-center gap-4">
-              {['Tw', 'In', 'Ig'].map((social) => (
-                <button key={social} className="h-10 w-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-[#E11D48] hover:text-[#E11D48] transition-colors shadow-sm">
-                  <span className="text-xs font-bold">{social}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Column 2: Platform */}
