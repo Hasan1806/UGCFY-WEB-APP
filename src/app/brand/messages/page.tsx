@@ -64,7 +64,7 @@ export default function BrandMessagesPage() {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
-        (payload) => {
+        (payload: any) => {
           const m = payload.new as any;
           setMessages((prev) => [...prev, {
             id: m.id,

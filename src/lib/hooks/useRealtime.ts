@@ -10,7 +10,7 @@ export function useRealtime(table: string, callback: (payload: any) => void) {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: table },
-        (payload) => {
+        (payload: any) => {
           callback(payload);
         }
       )

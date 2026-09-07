@@ -44,14 +44,14 @@ export default function BrandDashboardPage() {
           .order("created_at", { ascending: false });
 
         if (campaigns) {
-          const activeCount = campaigns.filter(c => c.status === "Active" || c.status === "active").length;
+          const activeCount = campaigns.filter((c: any) => c.status === "Active" || c.status === "active").length;
           setKpis(prev => {
             const newKpis = [...prev];
             newKpis[0].value = activeCount.toString();
             return newKpis;
           });
 
-          setPipelineItems(campaigns.slice(0, 3).map(c => ({
+          setPipelineItems(campaigns.slice(0, 3).map((c: any) => ({
             name: c.title || c.name,
             status: c.status,
             progress: c.progress || 0,
@@ -69,7 +69,7 @@ export default function BrandDashboardPage() {
           .limit(3);
         
         if (notifs) {
-          setActivities(notifs.map(n => ({
+          setActivities(notifs.map((n: any) => ({
             label: n.message,
             time: new Date(n.created_at).toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' }),
             color: n.type === "success" ? "#22C55E" : (n.type === "error" ? "#DC143C" : "#2563EB")

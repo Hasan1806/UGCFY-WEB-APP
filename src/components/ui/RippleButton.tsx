@@ -48,21 +48,14 @@ export function RippleButton({ children, className = "", onClick, ...props }: Ri
       {ripples.map((ripple) => (
         <span
           key={ripple.id}
-          className="pointer-events-none absolute h-24 w-24 rounded-full bg-white/20"
+          className="pointer-events-none absolute h-24 w-24 rounded-full bg-white/20 animate-ripple"
           style={{
             left: ripple.x - 48,
             top: ripple.y - 48,
-            animation: "ripple 0.7s ease-out",
           }}
         />
       ))}
       {children}
-      <style jsx>{`
-        @keyframes ripple {
-          from { transform: scale(0.2); opacity: 0.45; }
-          to { transform: scale(1.8); opacity: 0; }
-        }
-      `}</style>
     </button>
   );
 }

@@ -73,3 +73,18 @@ select {
     backdrop-filter: blur(28px);
   }
 }
+
+@keyframes ripple {
+  from {
+    transform: scale(0.2);
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: ripple 0.7s ease-out forwards;
+}

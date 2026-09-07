@@ -40,7 +40,7 @@ export default function BrandCampaignsPage() {
         if (error) throw error;
 
         if (data) {
-          setCampaigns(data.map(c => ({
+          setCampaigns(data.map((c: any) => ({
             id: c.id,
             title: c.title || c.name,
             category: c.category || "UGC",
@@ -67,7 +67,7 @@ export default function BrandCampaignsPage() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "campaigns" },
-        (payload) => {
+        (payload: any) => {
           fetchCampaigns(); // Simplest way is to refetch, or optimistically update state
         }
       )
