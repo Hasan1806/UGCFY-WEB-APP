@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PUBLIC_ROUTES = ["/login", "/pending-approval", "/unauthorized"];
+const PUBLIC_ROUTES = ["/", "/login", "/pending-approval", "/unauthorized"];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -67,7 +67,7 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const isPublicRoute = PUBLIC_ROUTES.some((route) => request.nextUrl.pathname.startsWith(route));
+  const isPublicRoute = request.nextUrl.pathname === "/" || PUBLIC_ROUTES.some((route) => route !== "/" && request.nextUrl.pathname.startsWith(route));
 
   // If user is not logged in and route is not public, redirect to login
   if (!user && !isPublicRoute && !request.nextUrl.pathname.startsWith("/_next") && !request.nextUrl.pathname.includes('.')) {
