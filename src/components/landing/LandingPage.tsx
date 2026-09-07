@@ -1424,7 +1424,7 @@ export default function LandingPage() {
       </section>
 
       {/* 11. CTA BANNER / CREATOR NETWORK FINALE */}
-      <section id="cta-section" className="relative py-20 sm:py-24 lg:py-28 bg-[#070709] overflow-hidden border-t border-white/[0.08] select-none">
+      <section id="cta-section" className="relative py-[54px] sm:py-16 lg:py-[76px] bg-[#070709] overflow-hidden border-t border-white/[0.08] select-none">
         
         {/* Subtle Background Grid Texture */}
         <div
