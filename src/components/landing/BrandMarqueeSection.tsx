@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Sparkles } from "lucide-react";
 
 interface BrandItem {
   id: string;
@@ -211,25 +210,17 @@ function BrandItemView({ brand }: { brand: BrandItem }) {
 
 export default function BrandMarqueeSection() {
   return (
-    <section className="py-12 sm:py-14 md:py-16 bg-gradient-to-b from-[#FCF8F8] via-[#FAF6F6] to-[#FFFDFD] border-b border-rose-100/40 overflow-hidden relative select-none">
+    <section className="pt-8 sm:pt-9 md:pt-11 pb-11 sm:pb-13 md:pb-14 bg-gradient-to-b from-[#FCF8F8] via-[#FAF6F6] to-[#FFFDFD] border-b border-rose-100/40 overflow-hidden relative select-none">
       {/* Ambient background accent glows */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 rounded-full bg-rose-400/5 blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-80 h-80 rounded-full bg-purple-400/5 blur-3xl pointer-events-none" />
 
       {/* Minimal Header */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 mb-7 sm:mb-9">
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 border border-rose-100 shadow-[0_2px_8px_rgba(225,29,72,0.05)] text-[10px] sm:text-[11px] font-bold tracking-widest text-[var(--color-primary)] uppercase mb-3">
-          <Sparkles
-            className="w-3.5 h-3.5 text-amber-500 animate-spin"
-            style={{ animationDuration: "8s" }}
-          />
-          <span>POWERING 500+ FAST-GROWING BRANDS</span>
-        </div>
-
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 mb-6 sm:mb-7">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight leading-snug">
           Trusted by brands you already know.
         </h2>
-        <p className="mt-2 text-sm sm:text-base text-gray-500 font-medium max-w-xl mx-auto">
+        <p className="mt-1.5 sm:mt-2 text-sm sm:text-base text-gray-500 font-medium max-w-xl mx-auto">
           From breakout D2C innovators to household market leaders.
         </p>
       </div>
