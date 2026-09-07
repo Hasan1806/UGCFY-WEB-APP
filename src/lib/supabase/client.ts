@@ -1,18 +1,12 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-let client: ReturnType<typeof createBrowserClient> | undefined;
+export function createClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const createClient = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co";
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
-
-  if (typeof window === "undefined") {
-    return createBrowserClient(supabaseUrl, supabaseAnonKey);
+  if (!url || !anonKey) {
+    throw new Error("Supabase environment variables are missing.");
   }
 
-  if (!client) {
-    client = createBrowserClient(supabaseUrl, supabaseAnonKey);
-  }
-
-  return client;
-};
+  return createBrowserClient(url, anonKey);
+}
