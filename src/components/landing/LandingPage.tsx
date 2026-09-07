@@ -1518,6 +1518,7 @@ export default function LandingPage() {
                     src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=85"
                     alt="UGC Beauty Creator"
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 45vw, 25vw"
                     className="object-cover object-top filter contrast-[1.04] saturate-[1.05]"
                   />
@@ -1549,6 +1550,7 @@ export default function LandingPage() {
                     src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=85"
                     alt="UGC Fashion Creator"
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 35vw, 20vw"
                     className="object-cover object-top filter contrast-[1.04]"
                   />
@@ -1570,6 +1572,7 @@ export default function LandingPage() {
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=85"
                     alt="UGC Skincare Creator"
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 35vw, 20vw"
                     className="object-cover object-top filter contrast-[1.04]"
                   />
@@ -1600,6 +1603,7 @@ export default function LandingPage() {
                     src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=500&q=85"
                     alt="UGC Lifestyle Creator"
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 35vw, 20vw"
                     className="object-cover object-top filter contrast-[1.04]"
                   />
@@ -1630,6 +1634,7 @@ export default function LandingPage() {
                     src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=500&q=85"
                     alt="UGC Fitness Creator"
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 35vw, 20vw"
                     className="object-cover object-top filter contrast-[1.04]"
                   />
@@ -1651,6 +1656,7 @@ export default function LandingPage() {
                     src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=400&q=80"
                     alt="UGC Campaign Apps & Channels"
                     fill
+                    unoptimized
                     sizes="15vw"
                     className="object-cover filter contrast-[1.06]"
                   />
