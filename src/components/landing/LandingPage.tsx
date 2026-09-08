@@ -412,7 +412,7 @@ export default function LandingPage() {
     setActiveCreatorIndex(index);
   };
 
-  const [openFaq, setOpenFaq] = useState<number>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const faqData = [
     { question: "What is an Influencer marketing platform?", answer: "An influencer marketing platform is a tool that helps brands, businesses, and companies find influencers, contact them, run campaigns, and track results. It also helps with handling payments and agreements between the brand and the influencer." },
@@ -983,30 +983,59 @@ export default function LandingPage() {
 
           {/* Founder Quote Row */}
           <div className="mt-10 sm:mt-12 max-w-4xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-xl border border-gray-100/90 shadow-[0_6px_30px_rgba(0,0,0,0.02)] p-6 sm:p-7 md:p-8 rounded-[28px] flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-6 md:gap-7">
-              {/* Founder Image */}
-              <div className="relative w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 rounded-2xl overflow-hidden border border-gray-100 bg-rose-50 shrink-0 shadow-xs">
-                <Image
-                  src="/images/team/shubham-mishra.jpg"
-                  alt="Shubham Mishra"
-                  fill
-                  className="object-cover"
-                />
-              </div>
+            <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 md:p-9 bg-gradient-to-br from-white via-[#FCF9F9] to-[#FFF5F6] border border-rose-100/80 shadow-[0_12px_40px_-12px_rgba(235,25,72,0.07)] backdrop-blur-xl">
+              
+              {/* Decorative Subtle Background Quote Watermark */}
+              <Quote 
+                className="absolute -top-3 right-6 sm:right-10 w-20 h-20 sm:w-28 sm:h-28 text-[var(--color-primary,#eb1948)]/[0.06] fill-[var(--color-primary,#eb1948)]/[0.06] pointer-events-none rotate-12" 
+                aria-hidden="true" 
+              />
+              
+              {/* Subtle ambient corner glow */}
+              <div 
+                className="absolute -bottom-10 -left-10 w-44 h-44 rounded-full bg-rose-500/[0.06] blur-2xl pointer-events-none" 
+                aria-hidden="true" 
+              />
 
-              {/* Quote Block */}
-              <div className="flex flex-col gap-2.5 sm:gap-3 text-left flex-1">
-                <div className="flex items-center gap-2">
-                  <Quote className="w-5 h-5 text-[var(--color-primary)] fill-[var(--color-primary)]/15 shrink-0" />
-                  <span className="text-[10px] sm:text-[11px] font-extrabold text-[var(--color-primary)] uppercase tracking-wider">Founder&apos;s Perspective</span>
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-7 md:gap-8">
+                {/* Founder Image */}
+                <div className="relative shrink-0">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-26 md:h-26 rounded-2xl sm:rounded-[22px] overflow-hidden border-2 border-white shadow-lg shadow-rose-500/10 ring-2 ring-rose-500/20 bg-rose-50">
+                    <Image
+                      src="/images/team/shubham-mishra.jpg"
+                      alt="Shubham Mishra - CEO at UGCFY"
+                      fill
+                      sizes="(max-width: 768px) 96px, 104px"
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
-                <blockquote className="text-[15px] sm:text-base md:text-lg font-bold text-gray-800 leading-relaxed">
-                  UGCFY is built to remove the friction from <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-orange-500">creator-led marketing</span>. Our focus is simple: help brands discover the right creators, help creators access structured opportunities, and make every collaboration easier to manage, measure, and scale.
-                </blockquote>
-                <div className="flex items-center gap-2 pt-0.5">
-                  <span className="font-extrabold text-gray-900 text-sm leading-tight">Shubham Mishra</span>
-                  <span className="text-gray-300">•</span>
-                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">CEO, UGCFY</span>
+
+                {/* Quote Block */}
+                <div className="flex flex-col gap-3 text-left flex-1">
+                  {/* Category Eyebrow */}
+                  <div className="inline-flex items-center gap-2 w-fit px-3 py-1 rounded-full bg-white/90 border border-rose-100 shadow-2xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary,#eb1948)] animate-pulse" />
+                    <span className="text-[11px] font-extrabold text-[var(--color-primary,#eb1948)] uppercase tracking-wider">
+                      Founder&apos;s Perspective
+                    </span>
+                  </div>
+
+                  {/* Blockquote with styled quotation */}
+                  <blockquote className="text-[15px] sm:text-base md:text-[17px] lg:text-lg font-semibold text-gray-800 leading-relaxed">
+                    &ldquo;UGCFY is built to remove the friction from <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary,#eb1948)] to-rose-600">creator-led marketing</span>. Our focus is simple: help brands discover the right creators, help creators access structured opportunities, and make every collaboration easier to manage, measure, and scale.&rdquo;
+                  </blockquote>
+
+                  {/* Author Line */}
+                  <div className="flex items-center gap-2.5 pt-1">
+                    <span className="font-extrabold text-gray-950 text-sm sm:text-[15px] tracking-tight">
+                      Shubham Mishra
+                    </span>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-xs sm:text-[13px] font-bold text-gray-500 uppercase tracking-wide">
+                      CEO &amp; Co-Founder, UGCFY
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1016,7 +1045,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 8: PROFESSIONAL USP GRID */}
-      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-white relative overflow-hidden">
+      <section className="pt-12 sm:pt-14 md:pt-16 lg:pt-20 pb-6 sm:pb-8 md:pb-10 bg-white relative overflow-hidden">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
@@ -1080,41 +1109,41 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 9: AI INTEGRATION CAROUSEL */}
-      <section className="relative overflow-hidden bg-[#FDFBFB] py-14 sm:py-16 md:py-20 lg:py-24">
+      <section className="relative overflow-hidden bg-[#FDFBFB] pt-6 sm:pt-8 md:pt-10 lg:pt-12 pb-7 sm:pb-8 md:pb-10 lg:pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-20 items-center">
+          <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-8 lg:gap-14 items-start">
 
             {/* Left Editorial Content */}
-            <div className="flex flex-col gap-8">
-              <div className="flex flex-col gap-6">
-                <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E11D48]/15 bg-white px-4 py-2 shadow-sm">
+            <div className="flex flex-col gap-6 lg:pt-2">
+              <div className="flex flex-col gap-4 sm:gap-5">
+                <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E11D48]/15 bg-white px-3.5 py-1.5 shadow-sm">
                   <span className="h-2 w-2 rounded-full bg-[#E11D48] animate-pulse" />
                   <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#E11D48]">
                     AI Powered
                   </span>
                 </div>
 
-                <h2 className="max-w-[520px] text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[0.98] text-[#0A0A0A]">
+                <h2 className="max-w-[520px] text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.02] text-[#0A0A0A]">
                   AI Integration By UGCFY
                 </h2>
 
-                <div className="flex flex-col gap-4">
-                  <p className="text-gray-600 text-lg leading-relaxed max-w-[480px]">
+                <div className="flex flex-col gap-3 sm:gap-3.5">
+                  <p className="text-gray-600 text-base sm:text-lg leading-relaxed max-w-[480px]">
                     When AI is all the rage in the digital sphere, let us bring you on the same page with our bespoke AI integrations.
                   </p>
-                  <p className="text-gray-500 text-base leading-relaxed max-w-[480px]">
+                  <p className="text-gray-500 text-sm sm:text-base leading-relaxed max-w-[480px]">
                     UGCFY integrates AI to bring precision to your influencer marketing campaigns by delivering data-backed strategies, superior targeting, and real-time adjustments.
                   </p>
                 </div>
               </div>
 
-              <Link href="/ai-integration" className="group relative inline-flex w-fit items-center justify-center rounded-2xl bg-[#E11D48] px-8 py-4 text-base font-extrabold text-white shadow-xl shadow-[#E11D48]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#BE123C] hover:shadow-2xl hover:shadow-[#E11D48]/25 active:translate-y-0">
+              <Link href="/ai-integration" className="group relative inline-flex w-fit items-center justify-center rounded-2xl bg-[#E11D48] px-7 py-3.5 text-base font-extrabold text-white shadow-xl shadow-[#E11D48]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#BE123C] hover:shadow-2xl hover:shadow-[#E11D48]/25 active:translate-y-0">
                 <span>Explore more</span>
                 <ChevronRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
 
               {/* Small understated feature row */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-2">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2.5 mt-1">
                 <span className="flex items-center gap-1.5 text-sm font-bold text-gray-800">
                   <Check className="w-4 h-4 text-[#E11D48] shrink-0" />
                   <span>5 AI modules</span>
@@ -1253,7 +1282,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>      {/* 10. FAQ SECTION */}
-      <section id="faq-section" className="relative py-10 sm:py-12 md:py-14 lg:py-16 bg-[#FCFCFD] overflow-hidden border-t border-gray-100/80">
+      <section id="faq-section" className="relative pt-5 sm:pt-6 md:pt-7 lg:pt-8 pb-10 sm:pb-12 md:pb-14 lg:pb-16 bg-[#FCFCFD] overflow-hidden border-t border-gray-100/80">
         {/* Atmospheric Ambient Glow */}
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-rose-500/[0.035] rounded-full blur-3xl pointer-events-none -translate-x-1/2" />
         <div className="absolute bottom-10 right-0 w-[28rem] h-[28rem] bg-gray-200/25 rounded-full blur-3xl pointer-events-none translate-x-1/3" />
@@ -1365,7 +1394,7 @@ export default function LandingPage() {
                       type="button"
                       aria-expanded={isOpen}
                       aria-controls={answerId}
-                      onClick={() => setOpenFaq(index)}
+                      onClick={() => setOpenFaq(prev => prev === index ? null : index)}
                       className="w-full py-5 px-5 sm:py-6 sm:px-6 flex items-center justify-between gap-4 text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary,#eb1948)]/40 focus-visible:ring-offset-2 rounded-2xl transition-colors duration-200"
                     >
                       <div className="flex items-start gap-3 sm:gap-4 flex-1">
