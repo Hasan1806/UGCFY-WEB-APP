@@ -359,8 +359,35 @@ export default function LandingPage() {
   const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
   const [activeCreatorIndex, setActiveCreatorIndex] = useState(0);
   const [activeFeatureTab, setActiveFeatureTab] = useState(0);
+  const [activeCtaIndex, setActiveCtaIndex] = useState(0);
   const creatorScrollRef = useRef<HTMLDivElement>(null);
   const featureScrollRef = useRef<HTMLDivElement>(null);
+  const ctaScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleCtaScroll = () => {
+    if (!ctaScrollRef.current) return;
+    const container = ctaScrollRef.current;
+    const card = container.firstElementChild as HTMLElement | null;
+    const cardWidth = card ? card.offsetWidth : 300;
+    const scrollPosition = container.scrollLeft;
+    const newIndex = Math.round(scrollPosition / (cardWidth + 16));
+    const maxIdx = Math.max((ctaCards?.length ?? 1) - 1, 0);
+    setActiveCtaIndex(Math.min(Math.max(newIndex, 0), maxIdx));
+  };
+
+  const scrollToCta = (index: number) => {
+    if (!ctaScrollRef.current) return;
+    const container = ctaScrollRef.current;
+    const cards = container.children;
+    if (cards[index]) {
+      (cards[index] as HTMLElement).scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+    setActiveCtaIndex(index);
+  };
 
   const handleFeatureScroll = () => {
     if (!featureScrollRef.current) return;
@@ -898,8 +925,12 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* CTA Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+          {/* CTA Cards Swipeable Track on Mobile / Grid on Desktop */}
+          <div
+            ref={ctaScrollRef}
+            onScroll={handleCtaScroll}
+            className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible pb-4 pt-1 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden gap-4 sm:gap-6 lg:gap-8 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0"
+          >
             {ctaCards.map((card, i) => (
               <div
                 key={i}
@@ -912,7 +943,7 @@ export default function LandingPage() {
                     setIsLoginPromptOpen(true);
                   }
                 }}
-                className="relative flex flex-col rounded-[32px] p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.06)] hover:border-gray-200/80 hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 w-full h-full"
+                className="relative flex flex-col justify-between rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.06)] hover:border-gray-200/80 hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 w-[84vw] max-w-[340px] sm:w-[380px] md:w-full shrink-0 snap-center md:shrink h-auto min-h-[380px]"
                 aria-label={`Join as ${card.label}`}
               >
                 {/* Badge Label & Icon Row */}
@@ -978,6 +1009,23 @@ export default function LandingPage() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Mobile Pagination Indicator Dots */}
+          <div className="flex md:hidden items-center justify-center gap-2 mt-2 mb-4">
+            {ctaCards.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => scrollToCta(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  activeCtaIndex === idx
+                    ? "w-7 bg-[var(--color-primary,#eb1948)]"
+                    : "w-2 bg-gray-200 hover:bg-gray-300"
+                }`}
+              />
             ))}
           </div>
 
