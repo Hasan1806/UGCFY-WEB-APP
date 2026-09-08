@@ -45,20 +45,20 @@ export function RedLanding() {
               transition={{ repeat: Infinity, duration: 35, ease: "linear" }}
             >
               {[
-                "http://creatornavigator.in/wp-content/uploads/2025/05/Hammer-Bash-.mp4",
-                "http://creatornavigator.in/wp-content/uploads/2025/05/4.mp4",
-                "http://creatornavigator.in/wp-content/uploads/2025/05/15.mp4",
-                "http://creatornavigator.in/wp-content/uploads/2025/05/43.mp4",
-                "http://creatornavigator.in/wp-content/uploads/2025/05/9.mp4",
-                "http://creatornavigator.in/wp-content/uploads/2025/05/Hammer-Bash-.mp4",
-                "http://creatornavigator.in/wp-content/uploads/2025/05/4.mp4",
-                "http://creatornavigator.in/wp-content/uploads/2025/05/15.mp4"
+                "/videos/card-1.mp4",
+                "/videos/card-2.mp4",
+                "/videos/card-3.mp4",
+                "/videos/card-4.mp4",
+                "/videos/card-5.mp4",
+                "/videos/card-6.mp4",
+                "/videos/card-7.mp4",
+                "/videos/card-8.mp4"
               ].map((src, index) => {
                 const rotation = (index * 360) / 8;
                 return (
                   <div 
                     key={index} 
-                    className="absolute w-[100px] h-[177px] md:w-[140px] md:h-[248px] flex-shrink-0 bg-white rounded-xl md:rounded-2xl shadow-2xl overflow-hidden preserve-3d"
+                    className="absolute w-[100px] h-[177px] md:w-[140px] md:h-[248px] flex-shrink-0 bg-gray-950 rounded-xl md:rounded-2xl shadow-2xl overflow-hidden preserve-3d border border-white/20"
                     style={{
                       // Responsive translation: adjusted radius for a balanced gap
                       transform: `rotateY(${rotation}deg) translateZ(calc(min(55vw, 320px)))`,
@@ -69,6 +69,7 @@ export function RedLanding() {
                       muted 
                       loop 
                       playsInline
+                      preload="auto"
                       src={src}
                       className="w-full h-full object-cover"
                     />
