@@ -11,6 +11,8 @@ export async function POST(request: NextRequest) {
     // 1. Parse JSON & Validate payload
     const validatedData = contactSchema.parse(body);
 
+    const formType = validatedData.form_type ?? "contact";
+
     // 2. Normalize fields
     const insertPayload = {
       name: validatedData.name ?? null,
@@ -20,18 +22,38 @@ export async function POST(request: NextRequest) {
       subject: validatedData.subject ?? null,
       message: validatedData.message ?? validatedData.query ?? null,
       query: validatedData.query ?? null,
-      form_type: validatedData.form_type ?? "contact",
+      form_type: formType,
       source: "brand_web",
       status: "new",
-      metadata: validatedData.metadata ?? {},
+      metadata: {
+        ...(validatedData.metadata ?? {}),
+        form_type: formType,
+      },
     };
 
     // 3. Insert using admin client to bypass RLS for public submissions
-    const { data, error } = await supabaseAdmin
+    let { data, error } = await supabaseAdmin
       .from("contact_submissions")
       .insert(insertPayload)
       .select("id, form_type, created_at")
       .single();
+
+    // Fallback if Postgres enum in DB does not yet support the specific form_type value
+    if (error && (error.code === "22P02" || error.message?.includes("contact_form_type"))) {
+      const fallbackPayload = {
+        ...insertPayload,
+        form_type: "contact",
+      };
+
+      const fallbackResult = await supabaseAdmin
+        .from("contact_submissions")
+        .insert(fallbackPayload)
+        .select("id, form_type, created_at")
+        .single();
+
+      data = fallbackResult.data;
+      error = fallbackResult.error;
+    }
 
     if (error) {
       console.error("[contact-submit-error]", {
@@ -54,7 +76,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Return success response
-    return jsonSuccess(data, 201);
+    return jsonSuccess({
+      ...data,
+      form_type: formType,
+    }, 201);
   } catch (err: unknown) {
     if (err instanceof ZodError) {
       return jsonError(
