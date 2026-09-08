@@ -114,40 +114,40 @@ export default function Navbar({ theme = "transparent-to-dark", hideOnScroll = f
           <nav className="hidden lg:flex items-center gap-8 font-medium text-[15px] text-white h-full">
             {/* PLATFORM MEGA MENU */}
             <div className="group px-4 py-6 cursor-pointer">
-              <span className="flex items-center gap-1 font-medium text-[15px] hover:text-[var(--color-primary)] transition-colors">
-                Platform <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              <span className="flex items-center gap-1.5 font-medium text-[15px] text-white/90 group-hover:text-white transition-colors">
+                Platform <ChevronDown className="w-4 h-4 text-white/70 group-hover:text-white group-hover:rotate-180 transition-transform duration-300" />
               </span>
               <MegaMenuPanel data={PLATFORM_DATA} />
             </div>
 
             {/* ECOSYSTEM MEGA MENU */}
             <div className="group px-4 py-6 cursor-pointer">
-              <span className="flex items-center gap-1 font-medium text-[15px] hover:text-[var(--color-primary)] transition-colors">
-                Ecosystem <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              <span className="flex items-center gap-1.5 font-medium text-[15px] text-white/90 group-hover:text-white transition-colors">
+                Ecosystem <ChevronDown className="w-4 h-4 text-white/70 group-hover:text-white group-hover:rotate-180 transition-transform duration-300" />
               </span>
               <MegaMenuPanel data={ECOSYSTEM_DATA} />
             </div>
 
             {/* RESOURCES MEGA MENU */}
             <div className="group px-4 py-6 cursor-pointer">
-              <span className="flex items-center gap-1 font-medium text-[15px] hover:text-[var(--color-primary)] transition-colors">
-                Resources <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              <span className="flex items-center gap-1.5 font-medium text-[15px] text-white/90 group-hover:text-white transition-colors">
+                Resources <ChevronDown className="w-4 h-4 text-white/70 group-hover:text-white group-hover:rotate-180 transition-transform duration-300" />
               </span>
               <MegaMenuPanel data={RESOURCES_DATA} />
             </div>
 
             {/* SERVICES MEGA MENU */}
             <div className="group px-4 py-6 cursor-pointer">
-              <span className="flex items-center gap-1 font-medium text-[15px] hover:text-[var(--color-primary)] transition-colors">
-                Services <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              <span className="flex items-center gap-1.5 font-medium text-[15px] text-white/90 group-hover:text-white transition-colors">
+                Services <ChevronDown className="w-4 h-4 text-white/70 group-hover:text-white group-hover:rotate-180 transition-transform duration-300" />
               </span>
               <MegaMenuPanel data={SERVICES_DATA} />
             </div>
 
             {/* COMPANY MEGA MENU */}
             <div className="group px-4 py-6 cursor-pointer">
-              <span className="flex items-center gap-1 font-medium text-[15px] hover:text-[var(--color-primary)] transition-colors">
-                Company <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+              <span className="flex items-center gap-1.5 font-medium text-[15px] text-white/90 group-hover:text-white transition-colors">
+                Company <ChevronDown className="w-4 h-4 text-white/70 group-hover:text-white group-hover:rotate-180 transition-transform duration-300" />
               </span>
               <MegaMenuPanel data={COMPANY_DATA} />
             </div>
