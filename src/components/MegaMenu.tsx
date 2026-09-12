@@ -34,47 +34,87 @@ export interface MegaMenuData {
 // COMPONENTS
 // --------------------------------------------------------
 
-export function MegaMenuCard({ data }: { data: MegaMenuCardData }) {
+export function MegaMenuCard({ data, theme = "light" }: { data: MegaMenuCardData; theme?: "light" | "dark" }) {
   const Icon = data.icon;
+  const isLight = theme === "light";
   return (
-    <Link href={data.href || "#"} className="flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors border-l-2 border-transparent hover:border-[var(--color-primary)] cursor-pointer">
-      <div className="w-12 h-12 rounded-lg bg-[var(--color-primary)]/15 flex items-center justify-center shrink-0">
-        <Icon className="w-6 h-6 text-[var(--color-primary)]" />
+    <Link 
+      href={data.href || "#"} 
+      className={`group/card flex items-start gap-3.5 p-3.5 rounded-2xl transition-all duration-200 border cursor-pointer ${
+        isLight 
+          ? 'border-rose-100/60 hover:border-rose-300 hover:bg-gradient-to-br hover:from-rose-100/90 hover:to-white hover:shadow-[0_8px_25px_rgba(225,29,72,0.08)] shadow-2xs' 
+          : 'border-transparent hover:border-white/10 hover:bg-white/5'
+      }`}
+    >
+      <div 
+        className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${
+          isLight 
+            ? 'bg-rose-100/80 text-brand-red-600 border border-rose-200/90 group-hover/card:bg-gradient-to-br group-hover/card:from-[#E11D48] group-hover/card:to-[#EF233C] group-hover/card:text-white group-hover/card:shadow-[0_4px_14px_rgba(225,29,72,0.35)] group-hover/card:border-transparent' 
+            : 'bg-[var(--color-primary)]/15 text-[var(--color-primary)] group-hover/card:bg-[var(--color-primary)] group-hover/card:text-white'
+        }`}
+      >
+        <Icon className="w-5 h-5 transition-colors duration-200" />
       </div>
       <div>
-        <h4 className="text-white font-bold text-[15px] mb-1">{data.title}</h4>
-        <p className="text-gray-400 text-sm leading-relaxed">{data.description}</p>
+        <h4 className={`font-bold text-[14.5px] mb-1 transition-colors duration-200 ${isLight ? 'text-slate-900 group-hover/card:text-brand-red-600' : 'text-white group-hover/card:text-[var(--color-primary)]'}`}>
+          {data.title}
+        </h4>
+        <p className={`text-xs leading-relaxed transition-colors ${isLight ? 'text-slate-500 group-hover/card:text-slate-700' : 'text-gray-400 group-hover/card:text-gray-300'}`}>
+          {data.description}
+        </p>
       </div>
     </Link>
   );
 }
 
-export function MegaMenuPanel({ data }: { data: MegaMenuData }) {
+export function MegaMenuPanel({ data, theme = "light" }: { data: MegaMenuData; theme?: "light" | "dark" }) {
   const gridCols = data.columns || 5;
   const gridClass = {
     3: "grid-cols-3",
     4: "grid-cols-4",
     5: "grid-cols-5",
   }[gridCols] || "grid-cols-5";
+  const isLight = theme === "light";
 
   return (
-    <div className="fixed top-[72px] left-0 w-full bg-[#0A0A0A]/90 backdrop-blur-2xl border-b border-white/10 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top z-40">
-      <div className="max-w-[1280px] mx-auto px-6 py-10">
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:${gridClass} gap-8`}>
+    <div 
+      className={`fixed top-[74px] left-0 w-full backdrop-blur-3xl border-b opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top z-40 ${
+        isLight 
+          ? 'bg-gradient-to-b from-[#FFF5F7]/98 to-[#FFFFFF]/98 border-rose-200/90 shadow-[0_25px_60px_-15px_rgba(225,29,72,0.16)]' 
+          : 'bg-[#0A0A0A]/95 border-white/10 shadow-2xl'
+      }`}
+    >
+      {/* Top micro radiance line */}
+      {isLight && (
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E11D48] to-transparent pointer-events-none opacity-80" />
+      )}
+
+      <div className="max-w-[1280px] mx-auto px-6 py-9">
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:${gridClass} gap-6`}>
           {data.cards.map((card, i) => (
-            <MegaMenuCard key={i} data={card} />
+            <MegaMenuCard key={i} data={card} theme={theme} />
           ))}
         </div>
 
         {data.footerItems && data.footerItems.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center gap-x-8 gap-y-4">
-             <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Add-ons</span>
-             {data.footerItems.map((item, i) => (
-               <Link key={i} href={item.href || "#"} className="text-sm font-medium text-gray-300 hover:text-[var(--color-primary)]/80 flex items-center gap-2 transition-colors">
-                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[var(--shadow-cta)]"></div>
-                 {item.label}
-               </Link>
-             ))}
+          <div className={`mt-7 pt-5 border-t flex flex-wrap items-center gap-x-6 gap-y-3 ${isLight ? 'border-rose-200/90' : 'border-white/10'}`}>
+            <span className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border ${isLight ? 'text-brand-red-600 bg-rose-100/90 border-rose-200' : 'text-gray-400 bg-white/5 border-white/10'}`}>
+              Add-ons
+            </span>
+            {data.footerItems.map((item, i) => (
+              <Link 
+                key={i} 
+                href={item.href || "#"} 
+                className={`text-[13.5px] font-semibold flex items-center gap-2 transition-all px-2.5 py-1 rounded-lg ${
+                  isLight 
+                    ? 'text-slate-700 hover:text-brand-red-600 hover:bg-rose-100/80' 
+                    : 'text-gray-300 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-brand-red-500 shadow-[0_0_8px_rgba(239,35,60,0.6)]"></div>
+                {item.label}
+              </Link>
+            ))}
           </div>
         )}
       </div>

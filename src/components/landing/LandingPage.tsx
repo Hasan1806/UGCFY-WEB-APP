@@ -456,7 +456,7 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white text-gray-900 w-full overflow-x-hidden selection:bg-[var(--color-primary)]/10 selection:text-[var(--color-primary-hover)]">
 
       {/* NAVBAR */}
-      <Navbar theme="transparent-to-dark" />
+      <Navbar theme="light" />
 
       {/* 1. HERO SECTION (Red Landing) */}
       <RedLanding />
@@ -1030,12 +1030,12 @@ export default function LandingPage() {
           </div>
 
           {/* Founder Quote Row */}
-          <div className="mt-10 sm:mt-12 max-w-4xl mx-auto">
-            <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 md:p-9 bg-gradient-to-br from-white via-[#FCF9F9] to-[#FFF5F6] border border-rose-100/80 shadow-[0_12px_40px_-12px_rgba(235,25,72,0.07)] backdrop-blur-xl">
+          <div className="mt-8 sm:mt-12 max-w-4xl mx-auto px-1 sm:px-0">
+            <div className="relative overflow-hidden rounded-[24px] sm:rounded-[32px] p-5 sm:p-8 md:p-9 bg-gradient-to-br from-white via-[#FCF9F9] to-[#FFF5F6] border border-rose-100/80 shadow-[0_12px_40px_-12px_rgba(235,25,72,0.07)] backdrop-blur-xl">
               
               {/* Decorative Subtle Background Quote Watermark */}
               <Quote 
-                className="absolute -top-3 right-6 sm:right-10 w-20 h-20 sm:w-28 sm:h-28 text-[var(--color-primary,#eb1948)]/[0.06] fill-[var(--color-primary,#eb1948)]/[0.06] pointer-events-none rotate-12" 
+                className="absolute top-2 right-4 sm:top-4 sm:right-8 w-16 h-16 sm:w-24 sm:h-24 text-[var(--color-primary,#eb1948)]/[0.05] fill-[var(--color-primary,#eb1948)]/[0.05] pointer-events-none rotate-12" 
                 aria-hidden="true" 
               />
               
@@ -1045,24 +1045,52 @@ export default function LandingPage() {
                 aria-hidden="true" 
               />
 
-              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-7 md:gap-8">
-                {/* Founder Image */}
-                <div className="relative shrink-0">
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-26 md:h-26 rounded-2xl sm:rounded-[22px] overflow-hidden border-2 border-white shadow-lg shadow-rose-500/10 ring-2 ring-rose-500/20 bg-rose-50">
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-7 md:gap-8">
+                
+                {/* Mobile Header: Avatar + Identity (Side-by-side on mobile, avatar only on sm+) */}
+                <div className="flex sm:hidden items-center gap-3.5 w-full">
+                  <div className="relative w-14 h-14 shrink-0 rounded-2xl overflow-hidden border-2 border-white shadow-md shadow-rose-500/10 ring-2 ring-rose-500/20 bg-rose-50">
                     <Image
                       src="/images/team/shubham-mishra.jpg"
                       alt="Shubham Mishra - CEO at UGCFY"
                       fill
-                      sizes="(max-width: 768px) 96px, 104px"
+                      sizes="56px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <div className="inline-flex items-center gap-1.5 w-fit px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-100/80 mb-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary,#eb1948)] animate-pulse" />
+                      <span className="text-[10px] font-extrabold text-[var(--color-primary,#eb1948)] uppercase tracking-wider">
+                        Founder&apos;s Perspective
+                      </span>
+                    </div>
+                    <h4 className="font-extrabold text-gray-950 text-base leading-tight truncate">
+                      Shubham Mishra
+                    </h4>
+                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wide truncate">
+                      CEO &amp; Co-Founder, UGCFY
+                    </p>
+                  </div>
+                </div>
+
+                {/* Desktop/Tablet Avatar (Hidden on mobile) */}
+                <div className="hidden sm:block relative shrink-0">
+                  <div className="relative w-22 h-22 md:w-26 md:h-26 rounded-[22px] overflow-hidden border-2 border-white shadow-lg shadow-rose-500/10 ring-2 ring-rose-500/20 bg-rose-50">
+                    <Image
+                      src="/images/team/shubham-mishra.jpg"
+                      alt="Shubham Mishra - CEO at UGCFY"
+                      fill
+                      sizes="104px"
                       className="object-cover"
                     />
                   </div>
                 </div>
 
                 {/* Quote Block */}
-                <div className="flex flex-col gap-3 text-left flex-1">
-                  {/* Category Eyebrow */}
-                  <div className="inline-flex items-center gap-2 w-fit px-3 py-1 rounded-full bg-white/90 border border-rose-100 shadow-2xs">
+                <div className="flex flex-col gap-3 text-left flex-1 w-full">
+                  {/* Desktop Category Eyebrow (Hidden on mobile) */}
+                  <div className="hidden sm:inline-flex items-center gap-2 w-fit px-3 py-1 rounded-full bg-white/90 border border-rose-100 shadow-2xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary,#eb1948)] animate-pulse" />
                     <span className="text-[11px] font-extrabold text-[var(--color-primary,#eb1948)] uppercase tracking-wider">
                       Founder&apos;s Perspective
@@ -1070,12 +1098,12 @@ export default function LandingPage() {
                   </div>
 
                   {/* Blockquote with styled quotation */}
-                  <blockquote className="text-[15px] sm:text-base md:text-[17px] lg:text-lg font-semibold text-gray-800 leading-relaxed">
+                  <blockquote className="text-[14px] sm:text-base md:text-[17px] lg:text-lg font-medium sm:font-semibold text-gray-800 leading-relaxed sm:leading-relaxed">
                     &ldquo;UGCFY is built to remove the friction from <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary,#eb1948)] to-rose-600">creator-led marketing</span>. Our focus is simple: help brands discover the right creators, help creators access structured opportunities, and make every collaboration easier to manage, measure, and scale.&rdquo;
                   </blockquote>
 
-                  {/* Author Line */}
-                  <div className="flex items-center gap-2.5 pt-1">
+                  {/* Desktop Author Line (Hidden on mobile) */}
+                  <div className="hidden sm:flex items-center gap-2.5 pt-1">
                     <span className="font-extrabold text-gray-950 text-sm sm:text-[15px] tracking-tight">
                       Shubham Mishra
                     </span>
@@ -1093,20 +1121,20 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 8: PROFESSIONAL USP GRID */}
-      <section className="pt-12 sm:pt-14 md:pt-16 lg:pt-20 pb-6 sm:pb-8 md:pb-10 bg-white relative overflow-hidden">
+      <section className="pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-6 sm:pb-8 md:pb-10 bg-white relative overflow-hidden">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm mb-6">
+          <div className="text-center mb-8 sm:mb-12 md:mb-14 max-w-3xl mx-auto relative z-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200 shadow-xs mb-4 sm:mb-6">
               <div className="w-2 h-2 rounded-full bg-brand-red-500 animate-pulse" />
-              <span className="text-[11px] font-bold uppercase tracking-widest text-gray-900">The UGCFY Advantage</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-gray-900">The UGCFY Advantage</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.05] text-[#0A0A0A] mb-4 sm:mb-5">
               Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red-500 to-rose-400">UGCFY?</span>
             </h2>
-            <p className="text-lg text-gray-500 font-medium leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto">
               Experience the next generation of influencer marketing. Everything you need to discover, manage, and scale your campaigns in one unified platform.
             </p>
           </div>
@@ -1119,7 +1147,7 @@ export default function LandingPage() {
               hidden: { opacity: 0 },
               show: { opacity: 1, transition: { staggerChildren: 0.1 } }
             }}
-            className="grid grid-cols-1 md:grid-cols-6 gap-6"
+            className="grid grid-cols-1 md:grid-cols-6 gap-3.5 sm:gap-5 md:gap-6"
           >
             {whyChooseData.map((usp, idx) => {
               const colSpanClasses = [
@@ -1136,18 +1164,27 @@ export default function LandingPage() {
                 <motion.div
                   key={idx}
                   variants={cardVariants}
-                  className={`bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl p-8 flex ${isLarge ? 'flex-col sm:flex-row items-center sm:items-start text-center sm:text-left' : 'flex-col items-start text-left'} shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group ${colSpanClasses[idx]}`}
+                  className={`bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl p-6 sm:p-8 flex flex-col text-left shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group ${colSpanClasses[idx]}`}
                 >
                   {/* Hover Flare */}
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-brand-red-500/5 rounded-full translate-x-20 -translate-y-20 group-hover:scale-150 transition-transform duration-700 ease-out blur-xl" />
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-brand-red-500/5 rounded-full translate-x-20 -translate-y-20 group-hover:scale-150 transition-transform duration-700 ease-out blur-xl pointer-events-none" />
 
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr from-white to-brand-red-50/50 flex items-center justify-center shadow-sm border border-gray-100/60 relative z-10 shrink-0 group-hover:border-brand-red-100 transition-colors duration-300 ${isLarge ? 'mb-6 sm:mb-0 sm:mr-8 w-20 h-20' : 'mb-6'}`}>
-                    <usp.icon className={`${isLarge ? 'w-8 h-8' : 'w-7 h-7'} text-brand-red-500`} strokeWidth={1.5} />
+                  {/* Header: Icon beside Heading */}
+                  <div className="relative z-10 flex items-center gap-4 sm:gap-5 mb-3.5 sm:mb-4">
+                    <div className={`w-13 h-13 sm:w-16 sm:h-16 ${isLarge ? 'md:w-16 md:h-16' : 'md:w-14 md:h-14'} rounded-2xl bg-gradient-to-tr from-white to-brand-red-50/60 flex items-center justify-center shadow-xs border border-gray-100/80 shrink-0 group-hover:border-brand-red-100 transition-colors duration-300`}>
+                      <usp.icon className={`${isLarge ? 'w-7 h-7 sm:w-8 sm:h-8' : 'w-6.5 h-6.5 sm:w-7 sm:h-7'} text-brand-red-500`} strokeWidth={1.75} />
+                    </div>
+
+                    <h3 className={`font-extrabold text-gray-950 tracking-tight leading-snug ${isLarge ? 'text-xl sm:text-2xl md:text-3xl' : 'text-lg sm:text-xl md:text-2xl'}`}>
+                      {usp.title}
+                    </h3>
                   </div>
 
-                  <div className="relative z-10 flex-1 flex flex-col justify-center h-full">
-                    <h3 className={`font-bold text-gray-900 tracking-tight mb-3 ${isLarge ? 'text-2xl md:text-3xl' : 'text-xl'}`}>{usp.title}</h3>
-                    <p className={`text-gray-500 leading-relaxed ${isLarge ? 'text-base md:text-lg max-w-lg' : 'text-sm'}`}>{usp.desc}</p>
+                  {/* Description */}
+                  <div className="relative z-10">
+                    <p className={`text-gray-600 leading-relaxed font-normal ${isLarge ? 'text-base sm:text-lg md:text-xl max-w-xl' : 'text-[15px] sm:text-base md:text-lg'}`}>
+                      {usp.desc}
+                    </p>
                   </div>
                 </motion.div>
               );
@@ -1726,15 +1763,15 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
                 animate={{ y: [1.5, -2, 1.5] }}
-                className="hidden sm:block absolute z-15 bottom-[0%] left-[48%] -translate-x-1/2 w-[90px] sm:w-[110px] lg:w-[125px] -rotate-1 hover:rotate-0 hover:scale-[1.05] transition-all duration-500 cursor-pointer group"
+                className="absolute z-15 bottom-[0%] left-[48%] -translate-x-1/2 w-[80px] xs:w-[90px] sm:w-[110px] lg:w-[125px] -rotate-1 hover:rotate-0 hover:scale-[1.05] transition-all duration-500 cursor-pointer group"
               >
-                <div className="relative aspect-square rounded-[18px] sm:rounded-[22px] overflow-hidden border border-white/15 shadow-[0_12px_30px_rgba(0,0,0,0.6)] bg-gray-900 group-hover:border-white/30 transition-colors">
+                <div className="relative aspect-square rounded-[16px] sm:rounded-[22px] overflow-hidden border border-white/15 shadow-[0_12px_30px_rgba(0,0,0,0.6)] bg-gray-900 group-hover:border-white/30 transition-colors">
                   <Image
                     src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=400&q=80"
                     alt="UGC Campaign Apps & Channels"
                     fill
                     unoptimized
-                    sizes="15vw"
+                    sizes="(max-width: 640px) 25vw, 15vw"
                     className="object-cover filter contrast-[1.06]"
                   />
                   <div className="absolute inset-0 bg-black/20" />
