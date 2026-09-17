@@ -42,8 +42,8 @@ export default async function InsightsPage() {
         .select("status")
         .in("campaign_id", campaignIds);
 
-      approvedSubmissions = (submissions ?? []).filter((submission) => normalizeStatus(submission.status) === "approved").length;
-      pendingSubmissions = (submissions ?? []).filter((submission) => normalizeStatus(submission.status) === "pending").length;
+      approvedSubmissions = (submissions ?? []).filter((submission: any) => normalizeStatus(submission.status) === "approved").length;
+      pendingSubmissions = (submissions ?? []).filter((submission: any) => normalizeStatus(submission.status) === "pending").length;
       hasAnyData = hasAnyData || (submissions ?? []).length > 0;
     }
 
@@ -58,7 +58,8 @@ export default async function InsightsPage() {
       .from("payments")
       .select("amount")
       .eq("brand_id", brandId);
-    totalSpend = (payments ?? []).reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0);
+    totalSpend = (payments ?? []).reduce((sum: number, payment: any) => sum + (Number(payment.amount) || 0), 0);
+
     hasAnyData = hasAnyData || totalSpend > 0;
   } catch (err) {
     console.warn("[Insights] handled optional analytics query:", err);

@@ -40,7 +40,8 @@ export default async function ContentLibraryPage() {
       .select("id")
       .eq("brand_id", brandId);
 
-    campaignIds = (campaigns ?? []).map((campaign) => campaign.id);
+    campaignIds = (campaigns ?? []).map((campaign: any) => campaign.id);
+
 
     if (campaignIds.length > 0) {
       const { data, error } = await supabase

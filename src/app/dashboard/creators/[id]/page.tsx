@@ -21,15 +21,28 @@ export default async function CreatorProfilePage({ params }: PageProps) {
     .eq("id", resolvedParams.id)
     .single();
 
-  const creator = profile;
+  let creator = profile;
   
   if (!creator) {
-    notFound();
+    const { MOCK_CREATORS } = await import("@/lib/mock/data");
+    const mock = MOCK_CREATORS.find((c) => c.id === resolvedParams.id) || MOCK_CREATORS[0];
+    if (mock) {
+      creator = {
+        id: mock.id,
+        full_name: mock.full_name,
+        avatar_url: mock.avatar_url,
+        location: mock.location,
+        bio: mock.bio,
+        instagram_url: mock.instagram_url,
+        youtube_url: mock.youtube_url,
+      };
+    }
   }
 
   if (!creator) {
     notFound();
   }
+
 
   const fullName = creator.full_name || "Priya Desai";
   const avatarUrl = creator.avatar_url || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6";

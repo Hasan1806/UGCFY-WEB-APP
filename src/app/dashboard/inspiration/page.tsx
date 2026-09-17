@@ -144,6 +144,56 @@ export default async function InspirationFeedPage({
     logSupabaseError("[Inspiration Feed] handled error", err);
   }
 
+  // Frontend Fallback: If no UGC submissions exist, show mock inspiration videos
+  if (submissionRows.length === 0) {
+    const { MOCK_CREATORS } = await import("@/lib/mock/data");
+    submissionRows = [
+      {
+        id: "ugc-1",
+        creator_id: MOCK_CREATORS[0]?.id || "c-1",
+        video_url: "https://assets.mixkit.co/videos/preview/mixkit-woman-applying-makeup-in-front-of-a-mirror-39845-large.mp4",
+        thumbnail_url: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&auto=format&fit=crop&q=80",
+        caption: "Clean Aesthetic Morning Skincare Routine",
+        category: "Beauty",
+        content_type: "Product Demo",
+        platform: "Instagram",
+        duration_seconds: 28,
+        status: "approved",
+        budget: 15000,
+        language: "English"
+      },
+      {
+        id: "ugc-2",
+        creator_id: MOCK_CREATORS[1]?.id || "c-2",
+        video_url: "https://assets.mixkit.co/videos/preview/mixkit-athletic-man-lifting-weights-in-a-gym-43093-large.mp4",
+        thumbnail_url: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&auto=format&fit=crop&q=80",
+        caption: "Pre-Workout Energy Boost & Protein Review",
+        category: "Fitness",
+        content_type: "Testimonial",
+        platform: "Instagram",
+        duration_seconds: 35,
+        status: "approved",
+        budget: 18000,
+        language: "English"
+      },
+      {
+        id: "ugc-3",
+        creator_id: MOCK_CREATORS[2]?.id || "c-3",
+        video_url: "https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-42966-large.mp4",
+        thumbnail_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80",
+        caption: "Unboxing Wireless Studio Headphones",
+        category: "Tech",
+        content_type: "Unboxing",
+        platform: "YouTube",
+        duration_seconds: 45,
+        status: "approved",
+        budget: 25000,
+        language: "English"
+      }
+    ];
+    setupPending = false;
+  }
+
   const videoRows = submissionRows.filter((row) => {
     const videoUrl = rowString(row, ["video_url", "content_url", "file_url", "media_url"]);
     return isApprovedVideo(row) && isVideoUrl(videoUrl);
@@ -160,7 +210,7 @@ export default async function InspirationFeedPage({
         .in("id", creatorIds);
 
       if (!error) {
-        (data ?? []).forEach((creator) => {
+        (data ?? []).forEach((creator: any) => {
           creatorsById[String(creator.id)] = creator;
         });
       }
@@ -168,6 +218,7 @@ export default async function InspirationFeedPage({
       logSupabaseError("[Inspiration Feed creator_profiles] handled error", err);
     }
   }
+
 
   const mappedVideos = videoRows.map((row): DashboardVideoCardData & {
     searchable: string;

@@ -273,6 +273,9 @@ export default function DashboardClientLayout({
     let cancelled = false;
 
     async function checkSession() {
+      // If no Supabase URL configured, stay on dashboard in frontend preview mode
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return;
+
       const { data } = await supabase.auth.getSession();
       if (!cancelled && !data.session) {
         router.replace("/login");
@@ -282,20 +285,24 @@ export default function DashboardClientLayout({
 
     checkSession();
 
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return;
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       if ((event === "SIGNED_OUT" || !session) && !cancelled) {
         router.replace("/login");
         router.refresh();
       }
     });
 
+
     return () => {
       cancelled = true;
       subscription.unsubscribe();
     };
   }, [router, supabase.auth]);
+
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

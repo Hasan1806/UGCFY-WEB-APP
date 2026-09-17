@@ -61,5 +61,22 @@ export default async function CampaignsPage() {
     logSupabaseError("[Campaigns] Handled error fetching campaigns", err);
   }
 
+  // Frontend Fallback: If no campaigns exist, show mock campaigns
+  if (initialCampaigns.length === 0) {
+    const { MOCK_CAMPAIGNS } = await import("@/lib/mock/data");
+    initialCampaigns = MOCK_CAMPAIGNS.map((c) => ({
+      id: c.id,
+      title: c.title,
+      description: c.description,
+      status: c.status,
+      fundsState: c.fundsState,
+      budget: c.budget,
+      currency: c.currency,
+      platforms: normalizePlatforms(c.platforms),
+      createdAt: c.createdAt,
+    }));
+  }
+
   return <CampaignsClient initialCampaigns={initialCampaigns} />;
+
 }

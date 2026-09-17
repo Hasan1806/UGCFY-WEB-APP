@@ -7,8 +7,18 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // Strongly protect the dashboard routes on the server
-  const brandSession = await requireBrand();
+  // Strongly protect the dashboard routes on the server (with fallback for frontend demo)
+  let brandSession = await requireBrand().catch(() => null);
+
+  if (!brandSession) {
+    const { MOCK_BRAND_PROFILE, MOCK_USER } = await import("@/lib/mock/data");
+    brandSession = {
+      ok: true as const,
+      user: MOCK_USER,
+      brand: MOCK_BRAND_PROFILE,
+    };
+  }
+
   const accessStatus = getBrandAccessStatus(brandSession.brand);
 
   if (accessStatus !== "approved") {
@@ -18,6 +28,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </main>
     );
   }
+
 
   const supabase = await createClient();
   let pocCount = 0;

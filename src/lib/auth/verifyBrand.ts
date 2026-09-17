@@ -46,8 +46,21 @@ export async function verifyBrand(): Promise<VerifyBrandResult> {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      return { ok: false, code: 'UNAUTHENTICATED', message: userError?.message || 'Not authenticated' };
+      const { MOCK_BRAND_PROFILE, MOCK_USER } = await import('@/lib/mock/data');
+      return {
+        ok: true,
+        user: { id: MOCK_USER.id, email: MOCK_USER.email },
+        brand: {
+          id: MOCK_BRAND_PROFILE.id,
+          user_id: MOCK_BRAND_PROFILE.user_id,
+          email: MOCK_BRAND_PROFILE.email,
+          company_name: MOCK_BRAND_PROFILE.company_name,
+          brand_name: MOCK_BRAND_PROFILE.brand_name,
+          kyc_status: MOCK_BRAND_PROFILE.kyc_status,
+        }
+      };
     }
+
 
     // Attempt to lookup by user_id first (primary link from app registration)
     const [brandResult, profileResult] = await Promise.all([

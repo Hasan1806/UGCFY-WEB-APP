@@ -131,8 +131,9 @@ export function CollaborationClient() {
           table: "conversation_messages",
           filter: `conversation_id=eq.${activeConversationId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const newMessage = payload.new as Message;
+
           setMessages((current) => {
             if (current.some((m) => m.id === newMessage.id)) {
               return current;
@@ -152,11 +153,12 @@ export function CollaborationClient() {
           );
         }
       )
-      .subscribe((status) => {
+      .subscribe((status: any) => {
         if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
           console.warn("Realtime connection lost. Messages will still refresh on reload.");
         }
       });
+
 
     return () => {
       supabase.removeChannel(channel);

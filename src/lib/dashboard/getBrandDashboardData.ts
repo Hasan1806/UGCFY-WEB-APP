@@ -276,9 +276,10 @@ export async function getBrandDashboardData(): Promise<BrandDashboardData> {
         .in("status", ["Pending", "pending", "Approved", "approved"]);
 
       if (!error && subData) {
-        metrics.pendingApprovals = subData.filter((submission) => normalizeStatus(submission.status) === "pending").length;
-        metrics.contentDelivered = subData.filter((submission) => normalizeStatus(submission.status) === "approved").length;
+        metrics.pendingApprovals = subData.filter((submission: any) => normalizeStatus(submission.status) === "pending").length;
+        metrics.contentDelivered = subData.filter((submission: any) => normalizeStatus(submission.status) === "approved").length;
       }
+
     }
   } catch {
     // optional table

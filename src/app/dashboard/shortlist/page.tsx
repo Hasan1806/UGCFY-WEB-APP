@@ -83,16 +83,36 @@ export default async function ShortlistPage() {
           logSupabaseError("[Shortlist creator_profiles]", creatorError);
         }
       } else {
-        (creators ?? []).forEach((creator) => {
+        (creators ?? []).forEach((creator: any) => {
           creatorsById[creator.id] = creator;
         });
+
       }
     }
   } catch (err) {
     logSupabaseError("[Shortlist] handled error", err);
   }
 
+  // Frontend Fallback: If no shortlist exists, provide preview items
+  if (shortlists.length === 0) {
+    const { MOCK_CREATORS } = await import("@/lib/mock/data");
+    const previewCreators = MOCK_CREATORS.slice(0, 3);
+    shortlists = previewCreators.map((c, i) => ({
+      id: `mock-sl-${i}`,
+      creator_id: c.id,
+      notes: "Saved from Creator Discovery preview",
+      source: "Discovery",
+      created_at: new Date().toISOString()
+    }));
+    previewCreators.forEach((c) => {
+      creatorsById[c.id] = c as CreatorRow;
+    });
+    tableMissing = false;
+    creatorTableMissing = false;
+  }
+
   const emptyTitle = tableMissing || creatorTableMissing ? "Shortlist unavailable" : "No shortlisted creators yet";
+
   const emptyDescription =
     tableMissing || creatorTableMissing
       ? "The shortlist database is currently being configured."

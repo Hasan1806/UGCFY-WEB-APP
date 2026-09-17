@@ -55,9 +55,9 @@ export default async function BillingPage() {
       .eq("brand_id", brandId)
       .order("created_at", { ascending: false });
 
-    const paymentRows = data ?? [];
+    const paymentRows: any[] = data ?? [];
     const campaignIds = Array.from(
-      new Set(paymentRows.map((payment) => payment.campaign_id).filter(Boolean))
+      new Set(paymentRows.map((payment: any) => payment.campaign_id).filter(Boolean))
     );
 
     let campaignTitleById = new Map<string, string>();
@@ -68,14 +68,15 @@ export default async function BillingPage() {
         .in("id", campaignIds);
 
       campaignTitleById = new Map(
-        (campaignRows ?? []).map((campaign) => [campaign.id, campaign.title ?? "Untitled campaign"])
+        (campaignRows ?? []).map((campaign: any) => [campaign.id, campaign.title ?? "Untitled campaign"])
       );
     }
 
-    payments = paymentRows.map((payment) => ({
+    payments = paymentRows.map((payment: any) => ({
       ...payment,
       campaignTitle: payment.campaign_id ? campaignTitleById.get(payment.campaign_id) ?? null : null,
     }));
+
   } catch (err) {
     console.warn("[Billing] handled optional payments query:", err);
   }

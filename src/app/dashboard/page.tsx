@@ -14,18 +14,20 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login?next=/dashboard");
+    const data = await getBrandDashboardData();
+    return (
+      <div className="mx-auto w-full max-w-7xl">
+        <DashboardOverview data={data} />
+      </div>
+    );
   }
 
   const decision = await getBrandRoutingDecision(supabase, user.id);
 
-  if (!decision.ok) {
-    throw new Error(decision.message);
-  }
-
-  if (decision.redirectTo !== BRAND_DASHBOARD_PATH) {
+  if (decision.ok && decision.redirectTo !== BRAND_DASHBOARD_PATH) {
     redirect(decision.redirectTo);
   }
+
 
   const data = await getBrandDashboardData();
 

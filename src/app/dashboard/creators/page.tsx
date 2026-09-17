@@ -82,6 +82,14 @@ export default async function CreatorDiscoveryPage() {
     logSupabaseError("[Creator Discovery] handled error", err);
   }
 
+  // Frontend Fallback: If no creators in backend, show mock creator directory
+  if (creators.length === 0) {
+    const { MOCK_CREATORS } = await import("@/lib/mock/data");
+    creators = MOCK_CREATORS as unknown as CreatorRow[];
+    tableMissing = false;
+  }
+
+
   const filters = [
     { label: "Niche/Category", options: ["All categories", "Beauty", "Fashion", "Fitness", "Food", "Tech", "Travel"] },
     { label: "Platform", options: ["All platforms", "Instagram", "YouTube"] },

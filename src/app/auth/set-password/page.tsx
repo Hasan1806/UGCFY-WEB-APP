@@ -52,12 +52,15 @@ function SetPasswordForm() {
   const [errorMsg, setErrorMsg] = React.useState("");
 
   React.useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    supabase.auth.getSession().then((res: any) => {
+      const session = res?.data?.session;
       if (!session) {
         router.replace("/register");
       }
     });
   }, [supabase.auth, router]);
+
 
   async function completeSignup() {
     const response = await fetch("/api/auth/complete-signup", {

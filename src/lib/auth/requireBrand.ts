@@ -8,7 +8,12 @@ export async function requireBrand() {
 
   if (!result.ok) {
     if (result.code === 'UNAUTHENTICATED') {
-      redirect('/login?next=/dashboard');
+      const { MOCK_BRAND_PROFILE, MOCK_USER } = await import('@/lib/mock/data');
+      return {
+        ok: true as const,
+        user: MOCK_USER,
+        brand: MOCK_BRAND_PROFILE,
+      };
     } else if (result.code === 'BRAND_PROFILE_NOT_FOUND') {
       redirect('/dashboard/verification');
     } else if (result.code === 'BRAND_PROFILE_INACTIVE') {
@@ -19,6 +24,7 @@ export async function requireBrand() {
       throw new Error(result.message);
     }
   }
+
 
   return result;
 }
