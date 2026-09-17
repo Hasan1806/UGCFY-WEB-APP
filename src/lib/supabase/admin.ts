@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import 'server-only';
 
 export const getVectorStoreClient = () => {
@@ -15,16 +15,34 @@ export const getVectorStoreClient = () => {
   });
 };
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+let _supabaseAdmin: SupabaseClient<any, "public", any> | null = null;
 
-if (!supabaseUrl || !serviceRoleKey) {
-  throw new Error("Missing Supabase admin environment variables.");
+export function getSupabaseAdmin(): SupabaseClient<any, "public", any> {
+  if (_supabaseAdmin) return _supabaseAdmin;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Missing Supabase admin environment variables (NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY).");
+  }
+
+  _supabaseAdmin = createClient<any, "public", any>(supabaseUrl, serviceRoleKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+
+  return _supabaseAdmin;
 }
 
-export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
+export const supabaseAdmin: SupabaseClient<any, "public", any> = new Proxy({} as SupabaseClient<any, "public", any>, {
+  get(_target, prop) {
+    const client = getSupabaseAdmin();
+    const value = (client as any)[prop];
+    return typeof value === "function" ? value.bind(client) : value;
   },
 });
+
+
