@@ -52,6 +52,18 @@ interface ReelItem {
   duration?: string;
 }
 
+function formatDeterministicTime(timestamp: string | number | Date): string {
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return "";
+  let hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const hoursStr = hours.toString().padStart(2, "0");
+  return `${hoursStr}:${minutes} ${ampm}`;
+}
+
 export function UnifiedOverview() {
   const {
     role,
@@ -373,9 +385,9 @@ export function UnifiedOverview() {
                   Verified Enterprise
                 </span>
 
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-[11px] font-medium text-slate-500 shadow-2xs">
+                <span suppressHydrationWarning className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-white/80 px-2.5 py-1 text-[11px] font-medium text-slate-500 shadow-2xs">
                   <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                  {currentDateFormatted}
+                  {currentDateFormatted || "Fri, 2 Oct, 2026"}
                 </span>
               </div>
 
@@ -1330,11 +1342,8 @@ export function UnifiedOverview() {
                         <span className="font-extrabold text-slate-900 truncate">
                           {act.title}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-400 shrink-0">
-                          {new Date(act.timestamp).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                        <span suppressHydrationWarning className="text-[10px] font-bold text-slate-400 shrink-0">
+                          {formatDeterministicTime(act.timestamp)}
                         </span>
                       </div>
                       <p className="text-slate-600 text-[11px] leading-relaxed">

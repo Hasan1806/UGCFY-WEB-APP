@@ -38,6 +38,18 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PricingModal } from "@/components/dashboard/PricingModal";
 import { VERIFIED_REAL_CREATORS } from "@/lib/creators/discovery/verifiedCreators";
 
+function formatDeterministicTime(timestamp: string | number | Date): string {
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return "";
+  let hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const hoursStr = hours.toString().padStart(2, "0");
+  return `${hoursStr}:${minutes} ${ampm}`;
+}
+
 interface NavItem {
   name: string;
   href: string;
@@ -738,11 +750,8 @@ export default function DashboardClientLayout({
                           >
                             <p className="font-extrabold text-slate-900">{act.title}</p>
                             <p className="text-slate-600 text-[11px] mt-0.5">{act.description}</p>
-                            <p className="text-[10px] text-slate-400 mt-1 font-medium">
-                              {new Date(act.timestamp).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
+                            <p suppressHydrationWarning className="text-[10px] text-slate-400 mt-1 font-medium">
+                              {formatDeterministicTime(act.timestamp)}
                             </p>
                           </div>
                         ))}

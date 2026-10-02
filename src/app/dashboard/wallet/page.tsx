@@ -167,7 +167,7 @@ export default function WalletPage() {
                 <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                   {filteredTransactions.map((tx) => (
                     <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3.5 px-3 text-slate-950 font-bold whitespace-nowrap">
+                      <td suppressHydrationWarning className="py-3.5 px-3 text-slate-950 font-bold whitespace-nowrap">
                         {new Date(tx.date).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })}
                       </td>
                       <td className="py-3.5 px-3">
@@ -358,7 +358,7 @@ export default function WalletPage() {
                 .filter((t) => t.type === "creator_payout")
                 .map((tx) => (
                   <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3.5 px-3 text-slate-950 font-bold whitespace-nowrap">
+                    <td suppressHydrationWarning className="py-3.5 px-3 text-slate-950 font-bold whitespace-nowrap">
                       {new Date(tx.date).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })}
                     </td>
                     <td className="py-3.5 px-3">
