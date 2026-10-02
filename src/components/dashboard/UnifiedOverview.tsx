@@ -424,9 +424,9 @@ export function UnifiedOverview() {
                   <div className="h-32 w-24 sm:h-38 sm:w-28 rounded-2xl overflow-hidden border-2 border-white/90 shadow-xl bg-white/40 backdrop-blur-md ring-1 ring-rose-200/50">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=280&auto=format&fit=crop&q=80"
-                      alt="Creator"
-                      className="h-full w-full object-cover"
+                      src="/images/creators/hero-creator-1.jpg"
+                      alt="Featured Creator"
+                      className="h-full w-full object-cover object-top"
                     />
                   </div>
                 </div>
@@ -441,9 +441,9 @@ export function UnifiedOverview() {
                   <div className="h-36 w-28 sm:h-44 sm:w-32 rounded-2xl overflow-hidden border-2 border-white shadow-2xl bg-white/60 backdrop-blur-md ring-1 ring-rose-300/60">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=280&auto=format&fit=crop&q=80"
-                      alt="Creator"
-                      className="h-full w-full object-cover"
+                      src="/images/creators/hero-creator-2.jpg"
+                      alt="Featured Creator"
+                      className="h-full w-full object-cover object-top"
                     />
                   </div>
                 </div>
@@ -453,9 +453,9 @@ export function UnifiedOverview() {
                   <div className="h-32 w-24 sm:h-38 sm:w-28 rounded-2xl overflow-hidden border-2 border-white/90 shadow-xl bg-white/40 backdrop-blur-md ring-1 ring-rose-200/50">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=280&auto=format&fit=crop&q=80"
-                      alt="Creator"
-                      className="h-full w-full object-cover"
+                      src="/images/creators/hero-creator-3.jpg"
+                      alt="Featured Creator"
+                      className="h-full w-full object-cover object-top"
                     />
                   </div>
                 </div>
@@ -597,11 +597,11 @@ export function UnifiedOverview() {
             <div className="mt-4 flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
               <div className="flex items-center -space-x-1.5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
+                <img src="/images/creators/hero-creator-1.jpg" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
+                <img src="/images/creators/hero-creator-2.jpg" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=80" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
+                <img src="/images/creators/hero-creator-3.jpg" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
                 <span className="h-6 w-6 rounded-full bg-slate-100 border-2 border-white text-[10px] font-black text-slate-600 flex items-center justify-center">+9</span>
               </div>
               <Link
@@ -645,11 +645,11 @@ export function UnifiedOverview() {
             <div className="mt-4 flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
               <div className="flex items-center -space-x-1.5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
+                <img src="/images/creators/hero-creator-1.jpg" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
+                <img src="/images/creators/hero-creator-2.jpg" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=80" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
+                <img src="/images/creators/hero-creator-3.jpg" alt="avatar" className="h-6 w-6 rounded-full border-2 border-white object-cover" />
               </div>
               <span className="text-xs font-extrabold text-emerald-600">
                 +4 deliverable stages
