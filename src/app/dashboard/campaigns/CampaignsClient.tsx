@@ -10,7 +10,17 @@ import { DashboardStatusBadge } from '@/components/dashboard/DashboardStatusBadg
 import { normalizePlatform } from '@/lib/dashboard/normalizeDashboardData'
 import { normalizeStatus } from '@/lib/dashboard/dashboardSafety'
 import { formatDashboardNumber } from '@/lib/dashboard/formatDashboardNumber'
-import type { CampaignListItem } from './page'
+export type CampaignListItem = {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  fundsState?: string | null;
+  budget: number | null;
+  currency: string;
+  platforms: import("@/lib/dashboard/normalizeDashboardData").NormalizedPlatform[];
+  createdAt: string | null;
+};
 
 function loadRazorpayScript(): Promise<boolean> {
   return new Promise((resolve) => {
@@ -443,9 +453,9 @@ export function CampaignsClient({ initialCampaigns }: Props) {
                   )}
                   <div className="flex gap-1">
                     {campaign.platforms.length > 0 ? (
-                      campaign.platforms.map((platform, idx) => (
+                      campaign.platforms.map((platform: string, idx: number) => (
                         <div key={idx} className="text-gray-500 flex items-center gap-1 text-sm bg-gray-50 px-2 py-1 rounded-md border border-gray-100 shadow-sm" title={platform}>
-                          {getPlatformIcon(platform)}
+                          {getPlatformIcon(platform as any)}
                         </div>
                       ))
                     ) : (

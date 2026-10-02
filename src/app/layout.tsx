@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ClientChatWrapper from "@/components/ClientChatWrapper";
 import { CookieConsentProvider } from "@/context/CookieConsentProvider";
@@ -9,11 +9,25 @@ import CookieSettingsModal from "@/components/cookies/CookieSettingsModal";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const fontInter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const fontSans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const siteUrl = "https://www.ugcfy.com";
@@ -99,6 +113,8 @@ export const viewport: Viewport = {
   themeColor: "#0A0A0A",
 };
 
+import { ClerkProvider } from "@clerk/nextjs";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -107,16 +123,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fontInter.variable} ${fontSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-gray-900" suppressHydrationWarning>
-        <CookieConsentProvider>
-          {children}
-          <CookieBanner />
-          <CookieSettingsModal />
-          <ClientChatWrapper />
-        </CookieConsentProvider>
+        <ClerkProvider>
+          <CookieConsentProvider>
+            {children}
+            <CookieBanner />
+            <CookieSettingsModal />
+            <ClientChatWrapper />
+          </CookieConsentProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

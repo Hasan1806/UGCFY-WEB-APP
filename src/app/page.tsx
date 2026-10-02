@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   },
 };
 
-import ClientPage from './ClientPage';
+import LandingPage from '@/components/landing/LandingPage';
 import { JsonLd } from '@/components/seo/JsonLd';
 
 const organizationJsonLd = {
@@ -51,7 +51,7 @@ export default async function Page(props: Props) {
     <>
       <JsonLd data={organizationJsonLd} />
       <JsonLd data={websiteJsonLd} />
-      <ClientPage />
+      <LandingPage />
     </>
   );
 }

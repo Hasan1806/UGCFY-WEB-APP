@@ -93,19 +93,26 @@ export default async function ShortlistPage() {
     logSupabaseError("[Shortlist] handled error", err);
   }
 
-  // Frontend Fallback: If no shortlist exists, provide preview items
+  // Authentic Real Creators Fallback: If no shortlist exists, provide real verified preview items
   if (shortlists.length === 0) {
-    const { MOCK_CREATORS } = await import("@/lib/mock/data");
-    const previewCreators = MOCK_CREATORS.slice(0, 3);
+    const { VERIFIED_REAL_CREATORS } = await import("@/lib/creators/discovery/verifiedCreators");
+    const previewCreators = VERIFIED_REAL_CREATORS.slice(0, 3);
     shortlists = previewCreators.map((c, i) => ({
-      id: `mock-sl-${i}`,
+      id: `sl-${c.id}`,
       creator_id: c.id,
-      notes: "Saved from Creator Discovery preview",
-      source: "Discovery",
-      created_at: new Date().toISOString()
+      notes: `Shortlisted for upcoming ${c.primaryNiche} campaign (Engagement: ${c.engagementRate}%).`,
+      source: "Instagram Discovery",
+      created_at: new Date(Date.now() - (i + 1) * 86400000).toISOString()
     }));
     previewCreators.forEach((c) => {
-      creatorsById[c.id] = c as CreatorRow;
+      creatorsById[c.id] = {
+        id: c.id,
+        full_name: c.displayName,
+        display_name: c.displayName,
+        niche: c.niches,
+        avatar_url: c.profileImageUrl,
+        location: [c.city, c.state, c.country].filter(Boolean).join(", "),
+      };
     });
     tableMissing = false;
     creatorTableMissing = false;

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function LegacyFeedPage() {
-  redirect("/dashboard/inspiration");
+  redirect("/dashboard/reels");
 }

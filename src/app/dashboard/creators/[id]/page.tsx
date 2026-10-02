@@ -24,17 +24,20 @@ export default async function CreatorProfilePage({ params }: PageProps) {
   let creator = profile;
   
   if (!creator) {
-    const { MOCK_CREATORS } = await import("@/lib/mock/data");
-    const mock = MOCK_CREATORS.find((c) => c.id === resolvedParams.id) || MOCK_CREATORS[0];
-    if (mock) {
+    const { VERIFIED_REAL_CREATORS } = await import("@/lib/creators/discovery/verifiedCreators");
+    const found = VERIFIED_REAL_CREATORS.find(
+      (c) => c.id === resolvedParams.id || c.instagramUsername === resolvedParams.id || c.sourceCreatorId === resolvedParams.id
+    ) || VERIFIED_REAL_CREATORS[0];
+    if (found) {
       creator = {
-        id: mock.id,
-        full_name: mock.full_name,
-        avatar_url: mock.avatar_url,
-        location: mock.location,
-        bio: mock.bio,
-        instagram_url: mock.instagram_url,
-        youtube_url: mock.youtube_url,
+        id: found.id,
+        full_name: found.displayName,
+        display_name: found.displayName,
+        avatar_url: found.profileImageUrl,
+        location: [found.city, found.state, found.country].filter(Boolean).join(", "),
+        bio: found.bio,
+        instagram_url: found.instagramProfileUrl,
+        youtube_url: null,
       };
     }
   }

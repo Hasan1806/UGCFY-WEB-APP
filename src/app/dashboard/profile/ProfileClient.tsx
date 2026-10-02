@@ -1,406 +1,502 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
-import { Camera, Save, Building, Mail, Globe, Phone, FileText, CheckCircle2, AlertCircle, ImageIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { SafeAvatar } from "@/components/dashboard/SafeAvatar";
+import React, { useState } from "react";
+import Link from "next/link";
+import {
+  MapPin,
+  Link as LinkIcon,
+  Calendar,
+  ShieldCheck,
+  Edit,
+  Building2,
+  Users,
+  BriefcaseBusiness,
+  Clapperboard,
+  Sparkles,
+  ExternalLink,
+  Instagram,
+  Twitter,
+  Youtube,
+  Linkedin,
+  X,
+  Check,
+  CheckCircle2,
+} from "lucide-react";
+import { useDashboard } from "@/context/DashboardContext";
+import { AnimatePresence, motion } from "framer-motion";
 
-interface Props {
-  initialProfile: any;
-}
+export default function ProfileClient() {
+  const {
+    role,
+    brandProfile,
+    updateBrandProfile,
+    creatorProfile,
+    updateCreatorProfile,
+    campaigns,
+    reels,
+  } = useDashboard();
 
-export function ProfileClient({ initialProfile }: Props) {
-  const router = useRouter();
-  const [profile, setProfile] = useState({
-    company_name: initialProfile?.company_name || "",
-    website: initialProfile?.website_url || initialProfile?.website || "",
-    industry: initialProfile?.industry || "",
-    location: initialProfile?.location || "",
-    business_description: initialProfile?.business_description || "",
-    contact_email: initialProfile?.contact_email || "",
-    phone: initialProfile?.phone || "",
-    logo_url: initialProfile?.logo_url || "",
+  const isBrand = role === "brand";
+
+  const [activeTab, setActiveTab] = useState<"overview" | "campaigns" | "reels">("overview");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Form State for Editing
+  const [editForm, setEditForm] = useState({
+    name: isBrand ? brandProfile.name : creatorProfile.name,
+    handle: isBrand ? brandProfile.handle : creatorProfile.handle,
+    avatar: isBrand ? brandProfile.logo : creatorProfile.avatar,
+    coverImage: isBrand ? brandProfile.coverImage : creatorProfile.coverImage,
+    bio: isBrand ? brandProfile.bio : creatorProfile.bio,
+    location: isBrand ? brandProfile.location : creatorProfile.location,
+    website: isBrand ? brandProfile.website : creatorProfile.website,
+    industryOrNiches: isBrand
+      ? brandProfile.industry
+      : creatorProfile.niches.join(", "),
   });
 
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
-
-  const [isUploading, setIsUploading] = useState(false);
-
-  const inputClass = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#E11D48] focus:outline-none focus:ring-4 focus:ring-[#E11D48]/10 transition-all";
-  const textareaClass = "min-h-[120px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#E11D48] focus:outline-none focus:ring-4 focus:ring-[#E11D48]/10 transition-all";
-
-  // Calculate completion percentage
-  const fields = [
-    profile.company_name,
-    profile.website,
-    profile.industry,
-    profile.location,
-    profile.business_description,
-    profile.contact_email,
-    profile.phone,
-    profile.logo_url
-  ];
-  const filledFields = fields.filter(f => typeof f === 'string' && f.trim().length > 0).length;
-  const completionPercentage = Math.round((filledFields / fields.length) * 100);
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    setSaveStatus(null);
-    try {
-      const payload = {
-        brand_name: profile.company_name, // the API expects brand_name
-        company_name: profile.company_name,
-        website: profile.website,
-        industry: profile.industry,
-        contact_phone: profile.phone,
-        business_description: profile.business_description,
-        logo_url: profile.logo_url
-      };
-      
-      const res = await fetch("/api/brand/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error?.message || "Failed to save profile");
-      }
-      
-      setSaveStatus({ type: "success", message: "Profile saved successfully." });
-      setTimeout(() => setSaveStatus(null), 3000);
-      router.refresh();
-    } catch (err: any) {
-      setSaveStatus({ type: "error", message: err.message || "An error occurred while saving." });
-    } finally {
-      setIsSaving(false);
-    }
+  const handleOpenEdit = () => {
+    setEditForm({
+      name: isBrand ? brandProfile.name : creatorProfile.name,
+      handle: isBrand ? brandProfile.handle : creatorProfile.handle,
+      avatar: isBrand ? brandProfile.logo : creatorProfile.avatar,
+      coverImage: isBrand ? brandProfile.coverImage : creatorProfile.coverImage,
+      bio: isBrand ? brandProfile.bio : creatorProfile.bio,
+      location: isBrand ? brandProfile.location : creatorProfile.location,
+      website: isBrand ? brandProfile.website : creatorProfile.website,
+      industryOrNiches: isBrand
+        ? brandProfile.industry
+        : creatorProfile.niches.join(", "),
+    });
+    setIsEditModalOpen(true);
   };
 
-  const handleUpload = async (file: File) => {
-    setIsUploading(true);
-    setSaveStatus(null);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("assetType", "logo");
-
-      const res = await fetch("/api/brand/profile-assets", {
-        method: "POST",
-        body: formData,
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isBrand) {
+      updateBrandProfile({
+        name: editForm.name,
+        handle: editForm.handle,
+        logo: editForm.avatar,
+        coverImage: editForm.coverImage,
+        bio: editForm.bio,
+        location: editForm.location,
+        website: editForm.website,
+        industry: editForm.industryOrNiches,
       });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setSaveStatus({ type: "error", message: data.error || "Upload failed" });
-        return;
-      }
-
-      setProfile((prev) => ({ ...prev, logo_url: data.url }));
-      setSaveStatus({ type: "success", message: "Logo updated successfully!" });
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (err) {
-      console.error(err);
-      setSaveStatus({ type: "error", message: "Error uploading file" });
-    } finally {
-      setIsUploading(false);
+    } else {
+      updateCreatorProfile({
+        name: editForm.name,
+        handle: editForm.handle,
+        avatar: editForm.avatar,
+        coverImage: editForm.coverImage,
+        bio: editForm.bio,
+        location: editForm.location,
+        website: editForm.website,
+        niches: editForm.industryOrNiches.split(",").map((s) => s.trim()).filter(Boolean),
+      });
     }
+
+    setSaveSuccess(true);
+    setTimeout(() => {
+      setIsEditModalOpen(false);
+      setSaveSuccess(false);
+    }, 1200);
   };
+
+  const currentCover = isBrand ? brandProfile.coverImage : creatorProfile.coverImage;
+  const currentAvatar = isBrand ? brandProfile.logo : creatorProfile.avatar;
+  const currentName = isBrand ? brandProfile.name : creatorProfile.name;
+  const currentHandle = isBrand ? brandProfile.handle : creatorProfile.handle;
+  const currentBio = isBrand ? brandProfile.bio : creatorProfile.bio;
+  const currentLocation = isBrand ? brandProfile.location : creatorProfile.location;
+  const currentWebsite = isBrand ? brandProfile.website : creatorProfile.website;
+  const currentJoined = isBrand ? brandProfile.joinedDate : creatorProfile.joinedDate;
 
   return (
-    <div className="w-full max-w-5xl mx-auto pb-24 space-y-8 animate-in fade-in duration-500">
-      
-      {/* 1. Header section */}
-      <div className="flex flex-col gap-2 border-b border-slate-200 pb-6">
-        <h1 className="text-3xl font-extrabold text-[#0A0A0A] tracking-tight">Brand Profile</h1>
-        <p className="text-slate-500 text-sm max-w-2xl">
-          Manage your company identity, billing-facing details, and public campaign profile. Keep this information up to date to build trust with creators.
-        </p>
-      </div>
+    <div className="max-w-4xl mx-auto space-y-6 pb-20 animate-in fade-in duration-300">
+      {/* ========================================================================= */}
+      {/* X/TWITTER INSPIRED PROFILE CONTAINER                                      */}
+      {/* ========================================================================= */}
+      <div className="rounded-3xl border border-slate-200/80 bg-white overflow-hidden shadow-xs">
+        {/* Banner / Cover */}
+        <div className="relative h-48 sm:h-64 w-full bg-slate-900">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={currentCover}
+            alt="Cover Banner"
+            className="w-full h-full object-cover opacity-90"
+          />
+        </div>
 
-      {/* 2. Profile completion card */}
-      <div className="bg-white rounded-[24px] border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-6 w-full md:w-auto">
-          <div className="relative h-16 w-16 shrink-0">
-            <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
-              <path
-                className="text-slate-100"
-                strokeWidth="3"
-                stroke="currentColor"
-                fill="none"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+        {/* Profile Info Header */}
+        <div className="px-6 sm:px-8 pb-6 relative">
+          {/* Avatar & Action Button Row */}
+          <div className="flex items-end justify-between -mt-14 sm:-mt-16 mb-4">
+            <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={currentAvatar}
+                alt={currentName}
+                className="h-28 w-28 sm:h-32 sm:w-32 rounded-3xl object-cover border-4 border-white shadow-md bg-white"
               />
-              <path
-                className={`${completionPercentage === 100 ? 'text-emerald-500' : 'text-[#E11D48]'} transition-all duration-1000 ease-out`}
-                strokeDasharray={`${completionPercentage}, 100`}
-                strokeWidth="3"
-                strokeDashoffset="0"
-                strokeLinecap="round"
-                stroke="currentColor"
-                fill="none"
-                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-slate-800">
-              {completionPercentage}%
+              <div className="absolute bottom-1 right-1 bg-emerald-500 text-white p-1 rounded-full border-2 border-white shadow-xs">
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+              </div>
             </div>
+
+            <button
+              type="button"
+              onClick={handleOpenEdit}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl border border-slate-200 bg-white text-xs font-bold text-slate-800 hover:bg-slate-50 transition-colors shadow-2xs"
+            >
+              <Edit className="w-3.5 h-3.5" />
+              <span>Edit Profile</span>
+            </button>
           </div>
+
+          {/* Name & Handle */}
           <div>
-            <h3 className="font-bold text-slate-900">Profile Completion</h3>
-            <p className="text-sm text-slate-500 mt-1">
-              {completionPercentage === 100 
-                ? "Your profile is fully complete. Great job!" 
-                : "Complete all fields to increase your credibility with top creators."}
-            </p>
-          </div>
-        </div>
-        
-        {completionPercentage < 100 && (
-          <div className="w-full md:w-auto bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
-            <p className="text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wider">Missing Fields</p>
-            <div className="flex flex-wrap gap-2">
-              {fields.map((f, idx) => {
-                const names = ['Company Name', 'Website', 'Industry', 'Location', 'Description', 'Email', 'Phone', 'Logo'];
-                if (typeof f !== 'string' || f.trim().length === 0) {
-                  return (
-                    <span key={idx} className="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2 py-1 rounded-md text-[10px] font-bold border border-red-100">
-                      <AlertCircle className="h-3 w-3" />
-                      {names[idx]}
-                    </span>
-                  );
-                }
-                return null;
-              })}
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                {currentName}
+              </h1>
+              <span
+                className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase ${
+                  isBrand ? "bg-brand-red-50 text-brand-red-600" : "bg-rose-50 text-rose-600"
+                }`}
+              >
+                {role}
+              </span>
             </div>
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column */}
-        <div className="lg:col-span-2 space-y-8">
-          
-          {/* 3. Company information card */}
-          <div className="bg-white rounded-[24px] border border-slate-200 p-6 sm:p-8 shadow-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-10 w-10 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">
-                <Building className="h-5 w-5 text-slate-500" />
-              </div>
-              <h2 className="text-xl font-bold text-slate-900">Company Information</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2 col-span-1 md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700">Brand / Company Name <span className="text-red-500">*</span></label>
-                <input 
-                  type="text" 
-                  value={profile.company_name} 
-                  onChange={e => setProfile({...profile, company_name: e.target.value})}
-                  className={inputClass} 
-                  placeholder="e.g. Acme Corp" 
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700">Website URL</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Globe className="h-4 w-4 text-slate-400" />
-                  </div>
-                  <input 
-                    type="url" 
-                    value={profile.website} 
-                    onChange={e => setProfile({...profile, website: e.target.value})}
-                    className={`${inputClass} pl-10`} 
-                    placeholder="https://example.com" 
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700">Industry / Category</label>
-                <input 
-                  type="text" 
-                  value={profile.industry} 
-                  onChange={e => setProfile({...profile, industry: e.target.value})}
-                  className={inputClass} 
-                  placeholder="e.g. Beauty, Tech, Fashion" 
-                />
-              </div>
-
-              <div className="space-y-2 col-span-1 md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700">Country / City Location</label>
-                <input 
-                  type="text" 
-                  value={profile.location} 
-                  onChange={e => setProfile({...profile, location: e.target.value})}
-                  className={inputClass} 
-                  placeholder="e.g. New York, USA" 
-                />
-              </div>
-
-              <div className="space-y-2 col-span-1 md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700">About Brand (Description)</label>
-                <textarea 
-                  value={profile.business_description} 
-                  onChange={e => setProfile({...profile, business_description: e.target.value})}
-                  className={textareaClass} 
-                  placeholder="Describe your brand, your mission, and the type of content you usually look for..." 
-                />
-              </div>
-            </div>
+            <p className="text-xs sm:text-sm font-semibold text-slate-400 mt-0.5">@{currentHandle}</p>
           </div>
 
-          {/* 4. Contact information card */}
-          <div className="bg-white rounded-[24px] border border-slate-200 p-6 sm:p-8 shadow-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-10 w-10 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">
-                <Mail className="h-5 w-5 text-slate-500" />
-              </div>
-              <h2 className="text-xl font-bold text-slate-900">Contact Information</h2>
-            </div>
+          {/* Bio */}
+          <p className="text-xs sm:text-sm text-slate-700 mt-3.5 max-w-2xl leading-relaxed">
+            {currentBio}
+          </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700">Work Email <span className="text-red-500">*</span></label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-4 w-4 text-slate-400" />
-                  </div>
-                  <input 
-                    type="email" 
-                    disabled
-                    value={profile.contact_email} 
-                    className={`${inputClass} pl-10 bg-slate-50 cursor-not-allowed`} 
-                    placeholder="email@company.com" 
-                  />
-                </div>
-                <p className="text-xs text-slate-500 mt-1">To change billing email, please contact support.</p>
+          {/* Metadata Row */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-slate-500 mt-4">
+            {currentLocation && (
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-slate-400" />
+                <span>{currentLocation}</span>
               </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700">Phone Number</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Phone className="h-4 w-4 text-slate-400" />
-                  </div>
-                  <input 
-                    type="tel" 
-                    value={profile.phone} 
-                    onChange={e => setProfile({...profile, phone: e.target.value})}
-                    className={`${inputClass} pl-10`} 
-                    placeholder="+1 (555) 000-0000" 
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column */}
-        <div className="lg:col-span-1 space-y-8">
-          
-          {/* 5. Brand assets card */}
-          <div className="bg-white rounded-[24px] border border-slate-200 p-6 sm:p-8 shadow-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-10 w-10 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center shrink-0">
-                <ImageIcon className="h-5 w-5 text-slate-500" />
-              </div>
-              <h2 className="text-xl font-bold text-slate-900">Brand Assets</h2>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50 transition-all hover:bg-slate-100/50">
-                <div className="relative mb-4 group cursor-pointer" onClick={() => document.getElementById("logoUpload")?.click()}>
-                  <div className="h-24 w-24 rounded-2xl bg-white shadow-sm border border-slate-200 overflow-hidden flex items-center justify-center">
-                    <SafeAvatar
-                      src={profile.logo_url}
-                      name={profile.company_name || "B"}
-                      size="xl"
-                      className="h-full w-full rounded-none"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl flex items-center justify-center text-white">
-                    {isUploading ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
-                    ) : (
-                      <Camera className="h-6 w-6" />
-                    )}
-                  </div>
-                  <input 
-                    type="file" 
-                    id="logoUpload" 
-                    className="hidden" 
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={(e) => {
-                      if (e.target.files?.[0]) handleUpload(e.target.files[0]);
-                    }}
-                  />
-                </div>
-                <div className="text-center">
-                  <h4 className="text-sm font-bold text-slate-900">Company Logo</h4>
-                  <p className="text-xs text-slate-500 mt-1">Square format, recommended 512x512px. PNG or JPG.</p>
-                </div>
-                <button 
-                  type="button"
-                  onClick={() => document.getElementById("logoUpload")?.click()}
-                  className="mt-4 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+            )}
+            {currentWebsite && (
+              <div className="flex items-center gap-1.5">
+                <LinkIcon className="w-4 h-4 text-slate-400" />
+                <a
+                  href={currentWebsite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-brand-red-600 hover:underline font-bold truncate max-w-[200px]"
                 >
-                  Upload Image
-                </button>
+                  {currentWebsite.replace("https://", "")}
+                </a>
               </div>
+            )}
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-4 h-4 text-slate-400" />
+              <span>Joined {currentJoined}</span>
+            </div>
+          </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-bold text-slate-700">Brand Guidelines</label>
-                <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl bg-white">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 bg-red-50 text-red-500 rounded-lg flex items-center justify-center shrink-0">
-                      <FileText className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">PDF Document</p>
-                      <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Not Uploaded</p>
-                    </div>
-                  </div>
-                  <button className="text-xs font-bold text-red-600 hover:text-red-700" disabled>
-                    Coming Soon
-                  </button>
+          {/* Stats Bar */}
+          <div className="flex items-center gap-6 mt-5 pt-4 border-t border-slate-100 text-xs">
+            {isBrand ? (
+              <>
+                <div>
+                  <strong className="text-slate-950 font-black">{campaigns.length}</strong>{" "}
+                  <span className="text-slate-500 font-medium">Campaigns</span>
                 </div>
-              </div>
+                <div>
+                  <strong className="text-slate-950 font-black">{brandProfile.creatorsWorkedWith}</strong>{" "}
+                  <span className="text-slate-500 font-medium">Creators Worked With</span>
+                </div>
+                <div>
+                  <strong className="text-slate-950 font-black">{brandProfile.activeCampaignsCount}</strong>{" "}
+                  <span className="text-slate-500 font-medium">Active Briefs</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <strong className="text-slate-950 font-black">{creatorProfile.followersCount}</strong>{" "}
+                  <span className="text-slate-500 font-medium">Followers</span>
+                </div>
+                <div>
+                  <strong className="text-slate-950 font-black">{creatorProfile.avgEngagement}</strong>{" "}
+                  <span className="text-slate-500 font-medium">Avg Engagement</span>
+                </div>
+                <div>
+                  <strong className="text-slate-950 font-black">{creatorProfile.completedCampaignsCount}</strong>{" "}
+                  <span className="text-slate-500 font-medium">Campaigns Completed</span>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Niche Tags for Creator */}
+          {!isBrand && creatorProfile.niches.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {creatorProfile.niches.map((niche) => (
+                <span
+                  key={niche}
+                  className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-bold text-slate-700 border border-slate-200/50"
+                >
+                  {niche}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Profile Tabs */}
+        <div className="border-t border-slate-200/80 bg-slate-50/50 px-6 sm:px-8 flex items-center gap-4 overflow-x-auto">
+          {[
+            { id: "overview", label: "Overview" },
+            { id: "campaigns", label: isBrand ? "Active Campaigns" : "Campaign History" },
+            { id: "reels", label: isBrand ? "Creator Content" : "Portfolio Reels" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`py-3.5 text-xs font-extrabold transition-all border-b-2 whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "border-brand-red-600 text-brand-red-600"
+                  : "border-transparent text-slate-500 hover:text-slate-900"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === "overview" && (
+        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4">
+          <h2 className="text-base font-extrabold text-slate-950">About {currentName}</h2>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{currentBio}</p>
+
+          <div className="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <p className="text-[10px] font-bold uppercase text-slate-400">Industry / Focus</p>
+              <p className="text-xs font-extrabold text-slate-900 mt-1">
+                {isBrand ? brandProfile.industry : creatorProfile.niches.join(", ")}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase text-slate-400">Location Base</p>
+              <p className="text-xs font-extrabold text-slate-900 mt-1">{currentLocation}</p>
             </div>
           </div>
         </div>
+      )}
 
-      </div>
+      {activeTab === "campaigns" && (
+        <div className="space-y-3">
+          {campaigns.map((camp) => (
+            <Link
+              key={camp.id}
+              href={`/dashboard/campaigns/${camp.id}`}
+              className="block p-4 rounded-3xl border border-slate-200/80 bg-white hover:border-brand-red-200 transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-extrabold text-slate-950">{camp.title}</h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700">
+                  {camp.status}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1 line-clamp-1">{camp.description}</p>
+            </Link>
+          ))}
+        </div>
+      )}
 
-      {/* 6. Sticky Save Button */}
-      <div className="fixed bottom-0 left-0 right-0 lg:left-64 bg-white/80 backdrop-blur-xl border-t border-slate-200 p-4 z-40 flex items-center justify-between md:justify-end gap-4 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
-        
-        {saveStatus && (
-          <div className={`text-sm font-bold flex items-center gap-2 ${saveStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
-            {saveStatus.type === 'success' ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-            {saveStatus.message}
-          </div>
+      {activeTab === "reels" && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {reels.map((reel) => (
+            <div key={reel.id} className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={reel.thumbnailUrl} alt={reel.title} className="h-40 w-full object-cover" />
+              <div className="p-3">
+                <p className="text-xs font-extrabold text-slate-950 truncate">{reel.title}</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">{reel.views} views</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Edit Profile Modal */}
+      <AnimatePresence>
+        {isEditModalOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsEditModalOpen(false)}
+              className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-xs"
+            />
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto"
+              >
+                {saveSuccess ? (
+                  <div className="py-8 text-center space-y-3">
+                    <div className="h-14 w-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-black text-slate-950">Profile Saved!</h3>
+                    <p className="text-xs text-slate-500">Your changes have been updated and persisted.</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSaveProfile} className="space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                      <h3 className="text-base font-black text-slate-950">
+                        Edit {isBrand ? "Brand Profile" : "Creator Profile"}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => setIsEditModalOpen(false)}
+                        className="p-1 text-slate-400 hover:text-slate-900 rounded-xl"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                          Display Name
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={editForm.name}
+                          onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                          Handle (@username)
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={editForm.handle}
+                          onChange={(e) => setEditForm({ ...editForm, handle: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                        Avatar / Logo Image URL
+                      </label>
+                      <input
+                        type="url"
+                        value={editForm.avatar}
+                        onChange={(e) => setEditForm({ ...editForm, avatar: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-900 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                        Cover Banner Image URL
+                      </label>
+                      <input
+                        type="url"
+                        value={editForm.coverImage}
+                        onChange={(e) => setEditForm({ ...editForm, coverImage: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-900 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                        Bio / Description
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={editForm.bio}
+                        onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-900 focus:bg-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                          Location
+                        </label>
+                        <input
+                          type="text"
+                          value={editForm.location}
+                          onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-900 focus:bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                          {isBrand ? "Industry" : "Niches (comma separated)"}
+                        </label>
+                        <input
+                          type="text"
+                          value={editForm.industryOrNiches}
+                          onChange={(e) => setEditForm({ ...editForm, industryOrNiches: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-900 focus:bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                        Website Link
+                      </label>
+                      <input
+                        type="url"
+                        value={editForm.website}
+                        onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-medium text-slate-900 focus:bg-white"
+                      />
+                    </div>
+
+                    <div className="pt-3 flex items-center justify-end gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditModalOpen(false)}
+                        className="px-4 py-2 rounded-2xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 rounded-2xl bg-slate-900 text-xs font-extrabold text-white hover:bg-black shadow-sm"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </motion.div>
+            </div>
+          </>
         )}
-
-        <button 
-          onClick={handleSave}
-          disabled={isSaving || !profile.company_name}
-          className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#E11D48] px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-red-500/20 transition-all hover:bg-[#BE123C] disabled:cursor-not-allowed disabled:opacity-60 hover:-translate-y-0.5 active:translate-y-0"
-        >
-          {isSaving ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-          ) : (
-            <Save className="h-4 w-4" />
-          )}
-          {isSaving ? "Saving changes..." : "Save Profile"}
-        </button>
-      </div>
-
+      </AnimatePresence>
     </div>
   );
 }

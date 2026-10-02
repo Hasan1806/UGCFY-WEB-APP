@@ -18,12 +18,13 @@ export default function SafeImage({
   useNextImage = true,
   ...props
 }: SafeImageProps) {
-  const [error, setError] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
   const safeSrc = src || fallbackSrc;
+  const isFailed = Boolean(safeSrc && failedSrc === safeSrc);
 
   // Render a fallback UI block if completely broken or if placeholder is missing
-  if (error || !safeSrc) {
+  if (isFailed || !safeSrc) {
     return (
       <div 
         className={`bg-slate-100 flex items-center justify-center border border-slate-200 overflow-hidden ${className || ""}`}
@@ -37,12 +38,13 @@ export default function SafeImage({
   if (useNextImage) {
     return (
       <Image
+        key={safeSrc}
         src={safeSrc}
         alt={alt || "Image"}
         className={className}
         onError={() => {
           console.warn(`[SafeImage] Failed to load Next Image: ${safeSrc}`);
-          setError(true);
+          setFailedSrc(safeSrc);
         }}
         {...props}
       />
@@ -53,12 +55,13 @@ export default function SafeImage({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      key={safeSrc}
       src={safeSrc}
       alt={alt || "Image"}
       className={className}
       onError={() => {
         console.warn(`[SafeImage] Failed to load <img>: ${safeSrc}`);
-        setError(true);
+        setFailedSrc(safeSrc);
       }}
       {...(props as unknown as React.ImgHTMLAttributes<HTMLImageElement>)}
     />

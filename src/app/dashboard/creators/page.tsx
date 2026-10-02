@@ -82,10 +82,27 @@ export default async function CreatorDiscoveryPage() {
     logSupabaseError("[Creator Discovery] handled error", err);
   }
 
-  // Frontend Fallback: If no creators in backend, show mock creator directory
+  // Real Creators Directory Fallback: Load 100% verified real Indian creator index
   if (creators.length === 0) {
-    const { MOCK_CREATORS } = await import("@/lib/mock/data");
-    creators = MOCK_CREATORS as unknown as CreatorRow[];
+    const { VERIFIED_REAL_CREATORS } = await import("@/lib/creators/discovery/verifiedCreators");
+    creators = VERIFIED_REAL_CREATORS.map((c) => ({
+      id: c.id,
+      full_name: c.displayName,
+      display_name: c.displayName,
+      niche: c.niches,
+      avatar_url: c.profileImageUrl,
+      location: [c.city, c.state, c.country].filter(Boolean).join(", "),
+      instagram_handle: `@${c.instagramUsername}`,
+      instagram_url: c.instagramProfileUrl,
+      youtube_handle: null,
+      youtube_url: null,
+      rate_card: {
+        starting_price: c.startingPrice || 15000,
+      },
+      portfolio_links: (c.topReels || []).map((r) => ({ name: r.title, url: c.instagramProfileUrl })),
+      availability: "Available",
+      bio: c.bio,
+    }));
     tableMissing = false;
   }
 

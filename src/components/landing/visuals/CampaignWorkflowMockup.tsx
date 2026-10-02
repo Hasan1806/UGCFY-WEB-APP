@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Send, CheckCircle2, Clock, Mail, Sparkles, UserCheck, FileText, Check } from "lucide-react";
+import { Send, Clock, Mail, Sparkles, UserCheck, FileText, Check } from "lucide-react";
 
 export default function CampaignWorkflowMockup() {
   const steps = [

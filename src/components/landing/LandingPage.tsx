@@ -1,24 +1,26 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import CreatorDiscoveryMockup from './visuals/CreatorDiscoveryMockup';
 import CampaignWorkflowMockup from './visuals/CampaignWorkflowMockup';
 import CampaignDashboardMockup from './visuals/CampaignDashboardMockup';
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
   Sparkles, Check, Globe2, Cpu, Layers, Activity, ShieldCheck,
-  Quote, ChevronLeft, ChevronRight, ChevronDown, X,
+  Quote, ChevronLeft, ChevronRight, X,
   User, Briefcase, Download, MessageCircle, ArrowRight, Play, Plus, Minus
 } from "lucide-react";
-import { motion, Variants, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import RequestAccessModal from "@/components/RequestAccessModal";
 import { RedLanding } from "@/components/ui/redlanding";
-import LoginPromptModal from "@/components/auth/LoginPromptModal";
 import BrandMarqueeSection from "./BrandMarqueeSection";
+
+const RequestAccessModal = dynamic(() => import("@/components/RequestAccessModal"), { ssr: false });
+const LoginPromptModal = dynamic(() => import("@/components/auth/LoginPromptModal"), { ssr: false });
 
 const whyChooseData = [
   { title: "200M+ Influencers Database", desc: "Access a global network of over 200 million influencers. Find your perfect match across platforms and boost visibility.", icon: Globe2 },
@@ -277,12 +279,6 @@ const platformFeatures = [
   }
 ];
 
-
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-};
-
 const successCreators = [
   {
     name: "Simran Bakhtiyar",
@@ -359,10 +355,37 @@ export default function LandingPage() {
   const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
   const [activeCreatorIndex, setActiveCreatorIndex] = useState(0);
   const [activeFeatureTab, setActiveFeatureTab] = useState(0);
+  const [activeWhyChooseIndex, setActiveWhyChooseIndex] = useState(0);
   const [activeCtaIndex, setActiveCtaIndex] = useState(0);
+  const whyChooseScrollRef = useRef<HTMLDivElement>(null);
   const creatorScrollRef = useRef<HTMLDivElement>(null);
   const featureScrollRef = useRef<HTMLDivElement>(null);
   const ctaScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleWhyChooseScroll = () => {
+    if (!whyChooseScrollRef.current) return;
+    const container = whyChooseScrollRef.current;
+    const card = container.firstElementChild as HTMLElement | null;
+    const cardWidth = card ? card.offsetWidth : 300;
+    const scrollPosition = container.scrollLeft;
+    const newIndex = Math.round(scrollPosition / (cardWidth + 16));
+    const maxIdx = Math.max((whyChooseData?.length ?? 1) - 1, 0);
+    setActiveWhyChooseIndex(Math.min(Math.max(newIndex, 0), maxIdx));
+  };
+
+  const scrollToWhyChoose = (index: number) => {
+    if (!whyChooseScrollRef.current) return;
+    const container = whyChooseScrollRef.current;
+    const cards = container.children;
+    if (cards[index]) {
+      (cards[index] as HTMLElement).scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+    setActiveWhyChooseIndex(index);
+  };
 
   const handleCtaScroll = () => {
     if (!ctaScrollRef.current) return;
@@ -472,9 +495,12 @@ export default function LandingPage() {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover object-center md:object-[60%_center] opacity-90 transition-opacity duration-1000"
+          preload="none"
+          className="absolute inset-0 w-full h-full object-cover object-center md:object-[60%_center] opacity-90 transition-opacity duration-1000 pointer-events-none"
           style={{
             filter: "brightness(0.85) contrast(1.04) saturate(0.95)",
+            willChange: "transform",
+            transform: "translate3d(0, 0, 0)",
           }}
           src="/hero-bg.mp4"
         />
@@ -500,13 +526,7 @@ export default function LandingPage() {
 
         {/* Content Container - Editorial Left-Aligned Composition */}
         <div className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 lg:px-16 relative z-10 w-full py-16 sm:py-20 md:py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-[560px] sm:max-w-[620px] flex flex-col items-start text-left"
-          >
+          <div className="max-w-[560px] sm:max-w-[620px] flex flex-col items-start text-left">
             {/* Cinematic Eyebrow / Live Indicator */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-bold uppercase tracking-widest text-white/90 mb-5 sm:mb-6 shadow-sm">
               <span className="relative flex h-2 w-2">
@@ -536,12 +556,12 @@ export default function LandingPage() {
               </div>
               <span className="tracking-wide">Watch Full Demo</span>
             </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* 4. CORE FEATURES SECTION (ZIG-ZAG) */}
-      <section className="pt-10 sm:pt-14 md:pt-16 pb-16 sm:pb-20 md:pb-28 bg-[var(--color-bg-light)] relative overflow-hidden">
+      <section className="pt-10 sm:pt-14 md:pt-16 pb-10 sm:pb-12 md:pb-16 bg-[var(--color-bg-light)] relative overflow-hidden content-auto">
         {/* Subtle background grid pattern */}
         <div
           aria-hidden="true"
@@ -640,7 +660,7 @@ export default function LandingPage() {
                 onClick={() => scrollToFeature(Math.max(activeFeatureTab - 1, 0))}
                 disabled={activeFeatureTab === 0}
                 aria-label="Previous feature"
-                className={`p-2 rounded-lg border transition-colors ${
+                className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 rounded-lg border transition-colors ${
                   activeFeatureTab === 0
                     ? "text-gray-300 border-gray-100 cursor-not-allowed"
                     : "text-gray-700 border-gray-200 bg-white hover:bg-gray-50 cursor-pointer"
@@ -649,18 +669,22 @@ export default function LandingPage() {
                 <ChevronLeft className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 {platformFeatures.map((_, dotIdx) => (
                   <button
                     key={dotIdx}
                     onClick={() => scrollToFeature(dotIdx)}
                     aria-label={`Go to feature ${dotIdx + 1}`}
-                    className={`transition-all duration-300 rounded-full cursor-pointer ${
-                      activeFeatureTab === dotIdx
-                        ? "w-6 h-1.5 bg-[var(--color-primary)]"
-                        : "w-1.5 h-1.5 bg-gray-300 hover:bg-gray-400"
-                    }`}
-                  />
+                    className="min-w-[36px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                  >
+                    <span
+                      className={`transition-all duration-300 rounded-full ${
+                        activeFeatureTab === dotIdx
+                          ? "w-6 h-1.5 bg-[var(--color-primary)]"
+                          : "w-1.5 h-1.5 bg-gray-300 hover:bg-gray-400"
+                      }`}
+                    />
+                  </button>
                 ))}
               </div>
 
@@ -668,7 +692,7 @@ export default function LandingPage() {
                 onClick={() => scrollToFeature(Math.min(activeFeatureTab + 1, platformFeatures.length - 1))}
                 disabled={activeFeatureTab === platformFeatures.length - 1}
                 aria-label="Next feature"
-                className={`p-2 rounded-lg border transition-colors ${
+                className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 rounded-lg border transition-colors ${
                   activeFeatureTab === platformFeatures.length - 1
                     ? "text-gray-300 border-gray-100 cursor-not-allowed"
                     : "text-gray-700 border-gray-200 bg-white hover:bg-gray-50 cursor-pointer"
@@ -680,7 +704,7 @@ export default function LandingPage() {
           </div>
 
           {/* DESKTOP VIEW: Full Spacious Zig-Zag Layout */}
-          <div className="hidden md:flex flex-col gap-20 sm:gap-24 md:gap-32">
+          <div className="hidden md:flex flex-col gap-16 sm:gap-20 md:gap-24">
             {platformFeatures.map((feature, index) => {
               const isVisuallyReversed = index % 2 !== 0;
 
@@ -692,13 +716,7 @@ export default function LandingPage() {
                   } group`}
                 >
                   {/* Visual Mockup Container (50-52% width) */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 24, scale: 0.985 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: false, amount: 0.25 }}
-                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full md:w-1/2 relative"
-                  >
+                  <div className="w-full md:w-1/2 relative">
                     {/* Ambient Glow behind Mockup */}
                     <div
                       aria-hidden="true"
@@ -709,16 +727,10 @@ export default function LandingPage() {
                     <div className="relative rounded-2xl md:rounded-[26px] overflow-hidden bg-white shadow-[0_20px_50px_-15px_rgba(0,0,0,0.06)] group-hover:shadow-[0_28px_60px_-12px_rgba(225,29,72,0.09)] transition-all duration-500 transform group-hover:-translate-y-1">
                       {feature.visual}
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Content Column (44-48% width) */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, amount: 0.25 }}
-                    transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full md:w-1/2 flex flex-col items-start text-left"
-                  >
+                  <div className="w-full md:w-1/2 flex flex-col items-start text-left">
                     {/* Step Indicator Badge */}
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-100/70 text-[10px] sm:text-[11px] font-extrabold tracking-widest text-[var(--color-primary)] uppercase mb-3.5 shadow-2xs">
                       <span>{feature.step}</span>
@@ -741,7 +753,7 @@ export default function LandingPage() {
                       <span>{feature.buttonText}</span>
                       <ArrowRight className="w-4 h-4" />
                     </Link>
-                  </motion.div>
+                  </div>
                 </div>
               );
             })}
@@ -750,7 +762,7 @@ export default function LandingPage() {
       </section>
 
       {/* NEW SECTION 4: CREATOR SUCCESS STORIES */}
-      <section className="py-14 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-[#FFFDFD] via-[#FDFBFB] to-[#FDF8F6] relative overflow-hidden">
+      <section className="pt-10 sm:pt-12 md:pt-14 lg:pt-16 pb-14 sm:pb-16 md:pb-20 lg:pb-24 bg-gradient-to-b from-[#FFFDFD] via-[#FDFBFB] to-[#FDF8F6] relative overflow-hidden content-auto">
         {/* Subtle Background Grid Pattern with Radial Mask */}
         <div
           className="absolute inset-0 bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"
@@ -866,18 +878,22 @@ export default function LandingPage() {
           </div>
 
           {/* Mobile Swipe Pagination Indicator */}
-          <div className="flex md:hidden items-center justify-center gap-2 mt-4 pt-1">
+          <div className="flex md:hidden items-center justify-center gap-1 mt-4 pt-1">
             {successCreators.map((_, dotIdx) => (
               <button
                 key={dotIdx}
                 onClick={() => scrollToCreator(dotIdx)}
                 aria-label={`Go to creator ${dotIdx + 1}`}
-                className={`transition-all duration-300 rounded-full ${
-                  activeCreatorIndex === dotIdx
-                    ? "w-6 h-1.5 bg-gradient-to-r from-[var(--color-primary)] to-purple-600"
-                    : "w-1.5 h-1.5 bg-gray-300/80 hover:bg-gray-400"
-                }`}
-              />
+                className="min-w-[36px] min-h-[44px] flex items-center justify-center cursor-pointer"
+              >
+                <span
+                  className={`transition-all duration-300 rounded-full ${
+                    activeCreatorIndex === dotIdx
+                      ? "w-6 h-1.5 bg-gradient-to-r from-[var(--color-primary)] to-purple-600"
+                      : "w-1.5 h-1.5 bg-gray-300/80 hover:bg-gray-400"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 
@@ -903,7 +919,7 @@ export default function LandingPage() {
       </section>
 
       {/* NEW SECTION 6: EVERYTHING YOU NEED / CTA + FOUNDER QUOTE */}
-      <section className="py-14 sm:py-16 md:py-20 bg-gradient-to-b from-[#FFFFFF] via-[#FFFDFD] to-[#FCF9F8] relative overflow-hidden">
+      <section className="py-14 sm:py-16 md:py-20 bg-gradient-to-b from-[#FFFFFF] via-[#FFFDFD] to-[#FCF9F8] relative overflow-hidden content-auto">
         {/* Soft warm radial glow matching red/orange/purple */}
         <div className="absolute top-1/3 right-1/4 w-[40%] h-[40%] rounded-full bg-orange-500/5 blur-[150px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-[35%] h-[35%] rounded-full bg-[var(--color-primary)]/5 blur-[150px] pointer-events-none" />
@@ -1013,19 +1029,23 @@ export default function LandingPage() {
           </div>
 
           {/* Mobile Pagination Indicator Dots */}
-          <div className="flex md:hidden items-center justify-center gap-2 mt-2 mb-4">
+          <div className="flex md:hidden items-center justify-center gap-1 mt-2 mb-4">
             {ctaCards.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => scrollToCta(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  activeCtaIndex === idx
-                    ? "w-7 bg-[var(--color-primary,#eb1948)]"
-                    : "w-2 bg-gray-200 hover:bg-gray-300"
-                }`}
-              />
+                className="min-w-[36px] min-h-[44px] flex items-center justify-center cursor-pointer"
+              >
+                <span
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    activeCtaIndex === idx
+                      ? "w-7 bg-[var(--color-primary,#eb1948)]"
+                      : "w-2 bg-gray-200 hover:bg-gray-300"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 
@@ -1121,7 +1141,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 8: PROFESSIONAL USP GRID */}
-      <section className="pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-6 sm:pb-8 md:pb-10 bg-white relative overflow-hidden">
+      <section className="pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-6 sm:pb-8 md:pb-10 bg-white relative overflow-hidden content-auto">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
@@ -1139,31 +1159,131 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: false }}
-            variants={{
-              hidden: { opacity: 0 },
-              show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-            }}
-            className="grid grid-cols-1 md:grid-cols-6 gap-3.5 sm:gap-5 md:gap-6"
-          >
+          {/* MOBILE VIEW: Beautiful Touch-Swipeable Carousel with Indicators */}
+          <div className="block md:hidden">
+            {/* Native Touch-Swipe Track */}
+            <div
+              ref={whyChooseScrollRef}
+              onScroll={handleWhyChooseScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-4 px-4 gap-3.5 pb-4 scroll-smooth"
+              style={{
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+            >
+              {whyChooseData.map((usp, idx) => {
+                const Icon = usp.icon;
+
+                return (
+                  <div
+                    key={idx}
+                    className="w-[84vw] max-w-[340px] shrink-0 snap-center bg-white/95 backdrop-blur-xl border border-gray-100/90 rounded-[28px] p-5 sm:p-6 flex flex-col text-left shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative overflow-hidden transition-all duration-300"
+                  >
+                    {/* Subtle Brand Ambient Glow Accent */}
+                    <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl from-brand-red-500/10 via-rose-500/5 to-transparent rounded-full translate-x-12 -translate-y-12 blur-xl pointer-events-none" />
+
+                    {/* Top Row: Icon + Step Badge */}
+                    <div className="relative z-10 flex items-center justify-between mb-4">
+                      <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-white to-brand-red-50 flex items-center justify-center shadow-xs border border-rose-100/70 shrink-0">
+                        <Icon className="w-6.5 h-6.5 text-brand-red-500" strokeWidth={1.75} />
+                      </div>
+
+                      <span className="text-[11px] font-extrabold tracking-wider px-2.5 py-1 rounded-full bg-rose-50/80 text-brand-red-500 border border-rose-100/60">
+                        0{idx + 1} / 0{whyChooseData.length}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="relative z-10 font-extrabold text-gray-950 text-xl tracking-tight leading-snug mb-2.5">
+                      {usp.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="relative z-10 text-gray-600 text-sm leading-relaxed font-normal">
+                      {usp.desc}
+                    </p>
+
+                    {/* Slide Hint / Indication on Card */}
+                    {idx < whyChooseData.length - 1 && whyChooseData[idx + 1] && (
+                      <div className="mt-4 pt-3 border-t border-gray-100/70 flex items-center justify-between text-xs font-semibold text-gray-400">
+                        <span className="text-[11px]">Next: {whyChooseData[idx + 1]?.title.split(" ")[0]}...</span>
+                        <span className="inline-flex items-center gap-1 text-brand-red-500 font-bold">
+                          Swipe <ArrowRight className="w-3.5 h-3.5 animate-pulse" />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Slide Navigation Controls & Indicators */}
+            <div className="flex items-center justify-between pt-2 px-1">
+              <button
+                onClick={() => scrollToWhyChoose(Math.max(activeWhyChooseIndex - 1, 0))}
+                disabled={activeWhyChooseIndex === 0}
+                aria-label="Previous advantage"
+                className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 rounded-xl border transition-all duration-200 ${
+                  activeWhyChooseIndex === 0
+                    ? "text-gray-300 border-gray-100 bg-gray-50/50 cursor-not-allowed"
+                    : "text-gray-700 border-gray-200 bg-white shadow-xs hover:bg-gray-50 active:scale-95 cursor-pointer"
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {/* Progress Dots with Active Expansion */}
+              <div className="flex items-center gap-1">
+                {whyChooseData.map((_, dotIdx) => (
+                  <button
+                    key={dotIdx}
+                    onClick={() => scrollToWhyChoose(dotIdx)}
+                    aria-label={`Go to slide ${dotIdx + 1}`}
+                    className="min-w-[32px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                  >
+                    <span
+                      className={`transition-all duration-300 rounded-full ${
+                        activeWhyChooseIndex === dotIdx
+                          ? "w-7 h-2 bg-gradient-to-r from-brand-red-500 to-rose-400 shadow-xs shadow-rose-500/20"
+                          : "w-2 h-2 bg-gray-200 hover:bg-gray-300"
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => scrollToWhyChoose(Math.min(activeWhyChooseIndex + 1, whyChooseData.length - 1))}
+                disabled={activeWhyChooseIndex === whyChooseData.length - 1}
+                aria-label="Next advantage"
+                className={`min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 rounded-xl border transition-all duration-200 ${
+                  activeWhyChooseIndex === whyChooseData.length - 1
+                    ? "text-gray-300 border-gray-100 bg-gray-50/50 cursor-not-allowed"
+                    : "text-gray-700 border-gray-200 bg-white shadow-xs hover:bg-gray-50 active:scale-95 cursor-pointer"
+                }`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* DESKTOP VIEW: Full Grid Layout */}
+          <div className="hidden md:grid grid-cols-6 gap-5 md:gap-6">
             {whyChooseData.map((usp, idx) => {
               const colSpanClasses = [
-                "md:col-span-4",
-                "md:col-span-2",
-                "md:col-span-2",
-                "md:col-span-2",
-                "md:col-span-2",
+                "col-span-4",
+                "col-span-2",
+                "col-span-2",
+                "col-span-2",
+                "col-span-2",
               ];
 
               const isLarge = idx === 0;
 
               return (
-                <motion.div
+                <div
                   key={idx}
-                  variants={cardVariants}
                   className={`bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl p-6 sm:p-8 flex flex-col text-left shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group ${colSpanClasses[idx]}`}
                 >
                   {/* Hover Flare */}
@@ -1186,15 +1306,15 @@ export default function LandingPage() {
                       {usp.desc}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* SECTION 9: AI INTEGRATION CAROUSEL */}
-      <section className="relative overflow-hidden bg-[#FDFBFB] pt-6 sm:pt-8 md:pt-10 lg:pt-12 pb-7 sm:pb-8 md:pb-10 lg:pb-12">
+      <section className="relative overflow-hidden bg-[#FDFBFB] pt-6 sm:pt-8 md:pt-10 lg:pt-12 pb-7 sm:pb-8 md:pb-10 lg:pb-12 content-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-8 lg:gap-14 items-start">
 
@@ -1246,128 +1366,142 @@ export default function LandingPage() {
 
             {/* Right AI Showcase Card (Single Panel) */}
             <div className="relative w-full flex items-center justify-center lg:justify-end">
-              <AnimatePresence mode="wait">
-                {(() => {
-                  const currentAi = (aiFeatures[activeAiIndex] || aiFeatures[0]) as AiFeature;
-                  return (
-                    <motion.div
-                      key={activeAiIndex}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                      className={`relative w-full flex flex-col justify-between p-6 sm:p-8 md:p-10 rounded-[36px] border transition-all duration-500 min-h-[430px] ${currentAi.theme === 'dark'
-                        ? 'bg-[#0A0A0A] text-white border-white/10 shadow-2xl shadow-black/20'
-                        : 'bg-white text-[#0A0A0A] border-black/5 shadow-2xl shadow-black/5'
-                        }`}
-                    >
-                      <div className="flex flex-col gap-6">
+              {(() => {
+                const currentAi = (aiFeatures[activeAiIndex] || aiFeatures[0]) as AiFeature;
+                return (
+                  <div
+                    key={activeAiIndex}
+                    className={`relative w-full flex flex-col justify-between p-6 sm:p-8 md:p-10 rounded-[36px] border transition-all duration-300 min-h-[430px] ${
+                      currentAi.theme === "dark"
+                        ? "bg-[#0A0A0A] text-white border-white/10 shadow-2xl shadow-black/20"
+                        : "bg-white text-[#0A0A0A] border-black/5 shadow-2xl shadow-black/5"
+                    }`}
+                  >
+                    <div className="flex flex-col gap-6">
 
-                        {/* Top row */}
-                        <div className="flex flex-wrap items-center gap-3 mb-2">
-                          <div className={`inline-flex px-3.5 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-[0.15em] ${currentAi.theme === 'dark' ? 'bg-white/10 text-white' : 'bg-[#E11D48]/10 text-[#E11D48]'
-                            }`}>
-                            {currentAi.eyebrow}
-                          </div>
-                          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider ${currentAi.theme === 'dark' ? 'border-white/10 text-gray-300 bg-white/5' : 'border-gray-100 text-gray-500 bg-gray-50'
-                            }`}>
-                            <Sparkles className="w-3 h-3" />
-                            AI Module
-                          </div>
+                      {/* Top row */}
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
+                        <div className={`inline-flex px-3.5 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-[0.15em] ${currentAi.theme === 'dark' ? 'bg-white/10 text-white' : 'bg-[#E11D48]/10 text-[#E11D48]'
+                          }`}>
+                          {currentAi.eyebrow}
                         </div>
-
-                        {/* Main Title & Desc */}
-                        <div>
-                          <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
-                            {currentAi.title}
-                          </h3>
-                          <p className={`text-base leading-relaxed ${currentAi.theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                            {currentAi.description}
-                          </p>
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider ${currentAi.theme === 'dark' ? 'border-white/10 text-gray-300 bg-white/5' : 'border-gray-100 text-gray-500 bg-gray-50'
+                          }`}>
+                          <Sparkles className="w-3 h-3" />
+                          AI Module
                         </div>
+                      </div>
 
-                        {/* Points grid */}
-                        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 my-2">
-                          {currentAi.points.map((point, i) => (
-                            <div key={i} className="flex items-center gap-3">
-                              <div className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#E11D48]">
-                                <Check className="w-3 h-3 text-white stroke-[3]" />
-                              </div>
-                              <span className={`text-[15px] font-bold leading-tight ${currentAi.theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
-                                {point}
-                              </span>
+                      {/* Main Title & Desc */}
+                      <div>
+                        <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
+                          {currentAi.title}
+                        </h3>
+                        <p className={`text-base leading-relaxed ${currentAi.theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                          {currentAi.description}
+                        </p>
+                      </div>
+
+                      {/* Points grid */}
+                      <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 my-2">
+                        {currentAi.points.map((point, i) => (
+                          <div key={i} className="flex items-center gap-3">
+                            <div className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-[#E11D48]">
+                              <Check className="w-3 h-3 text-white stroke-[3]" />
                             </div>
+                            <span className={`text-[15px] font-bold leading-tight ${currentAi.theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
+                              {point}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Footer: Read More & Controls */}
+                    <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedAiFeature(currentAi)}
+                        aria-label={`Read more about ${currentAi.title}`}
+                        className={`group flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-xl font-extrabold text-sm border transition-all duration-300 ${currentAi.theme === 'dark'
+                          ? 'border-white/15 text-white bg-white/5 hover:bg-white/10'
+                          : 'border-gray-200 text-[#0A0A0A] bg-gray-50/50 hover:bg-gray-100'
+                          }`}
+                      >
+                        Read More
+                        <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      </button>
+
+                      <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+
+                        {/* Progress Dots */}
+                        <div className="flex items-center gap-1">
+                          {aiFeatures.map((feature, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => setActiveAiIndex(i)}
+                              aria-label={`Show ${feature.title}`}
+                              className="min-w-[28px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                            >
+                              <span
+                                className={`h-2 rounded-full transition-all duration-300 ${
+                                  activeAiIndex === i
+                                    ? "w-6 bg-[#E11D48]"
+                                    : `w-2 hover:w-3 ${
+                                        currentAi.theme === "dark" ? "bg-white/20" : "bg-gray-300"
+                                      }`
+                                }`}
+                              />
+                            </button>
                           ))}
                         </div>
-                      </div>
 
-                      {/* Footer: Read More & Controls */}
-                      <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedAiFeature(currentAi)}
-                          aria-label={`Read more about ${currentAi.title}`}
-                          className={`group flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-4 rounded-xl font-extrabold text-sm border transition-all duration-300 ${currentAi.theme === 'dark'
-                            ? 'border-white/15 text-white bg-white/5 hover:bg-white/10'
-                            : 'border-gray-200 text-[#0A0A0A] bg-gray-50/50 hover:bg-gray-100'
+                        {/* Arrows */}
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            aria-label="Show previous AI service"
+                            onClick={() =>
+                              setActiveAiIndex((prev) =>
+                                prev === 0 ? aiFeatures.length - 1 : prev - 1
+                              )
+                            }
+                            className={`min-w-[44px] min-h-[44px] p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
+                              currentAi.theme === "dark"
+                                ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
+                                : "border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]"
                             }`}
-                        >
-                          Read More
-                          <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                        </button>
-
-                        <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
-
-                          {/* Progress Dots */}
-                          <div className="flex items-center gap-2">
-                            {aiFeatures.map((feature, i) => (
-                              <button
-                                key={i}
-                                type="button"
-                                onClick={() => setActiveAiIndex(i)}
-                                aria-label={`Show ${feature.title}`}
-                                className={`h-2 rounded-full transition-all duration-300 ${activeAiIndex === i
-                                  ? 'w-6 bg-[#E11D48]'
-                                  : `w-2 hover:w-3 ${currentAi.theme === 'dark' ? 'bg-white/20' : 'bg-gray-300'}`
-                                  }`}
-                              />
-                            ))}
-                          </div>
-
-                          {/* Arrows */}
-                          <div className="flex gap-2">
-                            <button
-                              type="button"
-                              aria-label="Show previous AI service"
-                              onClick={() => setActiveAiIndex(prev => prev === 0 ? aiFeatures.length - 1 : prev - 1)}
-                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${currentAi.theme === 'dark'
-                                ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                                : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
-                                }`}
-                            ><ChevronLeft className="w-5 h-5" /></button>
-                            <button
-                              type="button"
-                              aria-label="Show next AI service"
-                              onClick={() => setActiveAiIndex(prev => (prev + 1) % aiFeatures.length)}
-                              className={`p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${currentAi.theme === 'dark'
-                                ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                                : 'border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]'
-                                }`}
-                            ><ChevronRight className="w-5 h-5" /></button>
-                          </div>
+                          >
+                            <ChevronLeft className="w-5 h-5" />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label="Show next AI service"
+                            onClick={() =>
+                              setActiveAiIndex((prev) => (prev + 1) % aiFeatures.length)
+                            }
+                            className={`min-w-[44px] min-h-[44px] p-3 rounded-full border transition-all active:scale-95 flex items-center justify-center shadow-sm ${
+                              currentAi.theme === "dark"
+                                ? "border-white/15 bg-white/5 hover:bg-white/10 text-white"
+                                : "border-gray-200 bg-white hover:bg-gray-50 text-[#0A0A0A]"
+                            }`}
+                          >
+                            <ChevronRight className="w-5 h-5" />
+                          </button>
                         </div>
                       </div>
+                    </div>
 
-                    </motion.div>
-                  );
-                })()}
-              </AnimatePresence>
+                  </div>
+                );
+              })()}
             </div>
 
           </div>
         </div>
       </section>      {/* 10. FAQ SECTION */}
-      <section id="faq-section" className="relative pt-5 sm:pt-6 md:pt-7 lg:pt-8 pb-10 sm:pb-12 md:pb-14 lg:pb-16 bg-[#FCFCFD] overflow-hidden border-t border-gray-100/80">
+      <section id="faq-section" className="relative pt-5 sm:pt-6 md:pt-7 lg:pt-8 pb-10 sm:pb-12 md:pb-14 lg:pb-16 bg-[#FCFCFD] overflow-hidden border-t border-gray-100/80 content-auto">
         {/* Atmospheric Ambient Glow */}
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-rose-500/[0.035] rounded-full blur-3xl pointer-events-none -translate-x-1/2" />
         <div className="absolute bottom-10 right-0 w-[28rem] h-[28rem] bg-gray-200/25 rounded-full blur-3xl pointer-events-none translate-x-1/3" />

@@ -3,7 +3,6 @@
 import { Sparkles, ArrowRight, Star, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 
 export function RedLanding() {
   return (
@@ -63,42 +62,30 @@ export function RedLanding() {
       {/* HERO CONTENT */}
       <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col items-center text-center mt-2 sm:mt-4">
         {/* Eyebrow Badge */}
-        <motion.div 
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+        <div 
           className="px-4 py-1.5 bg-white/90 border border-rose-200/90 rounded-full text-brand-red-600 text-[11px] font-extrabold uppercase tracking-widest flex items-center gap-2 backdrop-blur-md mb-5 shadow-[0_2px_12px_rgba(239,35,60,0.08)]"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-brand-red-600 animate-pulse shadow-[0_0_8px_rgba(225,29,72,0.8)]" />
           <Sparkles className="w-3.5 h-3.5 text-brand-red-500" />
           <span>The Future of Influencer Marketing</span>
-        </motion.div>
+        </div>
         
         {/* Main Headline */}
-        <motion.h1 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+        <h1 
           className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-950 leading-[1.08] tracking-tight mb-5 max-w-4xl"
         >
           Best AI-Powered <span className="bg-gradient-to-r from-brand-red-600 via-[#EF233C] to-rose-500 bg-clip-text text-transparent drop-shadow-xs">UGC &amp; Influencer</span> Marketing Platform
-        </motion.h1>
+        </h1>
         
         {/* Subtitle */}
-        <motion.p 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+        <p 
           className="text-base sm:text-lg text-gray-600 max-w-2xl font-normal leading-relaxed mb-7 sm:mb-8"
         >
           UGCFY is an AI-powered platform offering comprehensive, end-to-end features from creator discovery and outreach to campaign management, tracking, and reporting—all integrated within a single dashboard.
-        </motion.p>
+        </p>
 
         {/* CTA Buttons */}
-        <motion.div 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+        <div 
           className="flex flex-col sm:flex-row gap-3.5 sm:gap-4 mb-4 sm:mb-6 w-full sm:w-auto"
         >
           <Link 
@@ -114,7 +101,7 @@ export function RedLanding() {
           >
             Book a Demo
           </Link>
-        </motion.div>
+        </div>
       </div>
 
       {/* 3D ROTATING VIDEO CAROUSEL */}
@@ -123,10 +110,8 @@ export function RedLanding() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[580px] md:w-[720px] h-[100px] bg-gradient-to-r from-transparent via-rose-500/20 to-transparent blur-3xl rounded-full pointer-events-none" />
 
         <div className="relative w-full max-w-6xl h-full flex items-center justify-center preserve-3d" style={{ transform: 'rotateX(5deg)' }}>
-            <motion.div 
-              className="absolute w-full h-full flex items-center justify-center preserve-3d"
-              animate={{ rotateY: [0, -360] }}
-              transition={{ repeat: Infinity, duration: 35, ease: "linear" }}
+            <div 
+              className="absolute w-full h-full flex items-center justify-center carousel-3d-track"
             >
               {[
                 "/videos/card-1.mp4",
@@ -152,14 +137,14 @@ export function RedLanding() {
                       muted 
                       loop 
                       playsInline
-                      preload="auto"
+                      preload="none"
                       src={src}
                       className="w-full h-full object-cover"
                     />
                   </div>
                 );
               })}
-            </motion.div>
+            </div>
         </div>
       </div>
 
@@ -246,6 +231,19 @@ export function RedLanding() {
       <style dangerouslySetInnerHTML={{__html: `
         .preserve-3d {
           transform-style: preserve-3d;
+        }
+        @keyframes rotate3dCarousel {
+          0% {
+            transform: rotateY(0deg);
+          }
+          100% {
+            transform: rotateY(-360deg);
+          }
+        }
+        .carousel-3d-track {
+          transform-style: preserve-3d;
+          animation: rotate3dCarousel 35s linear infinite;
+          will-change: transform;
         }
       `}} />
     </section>

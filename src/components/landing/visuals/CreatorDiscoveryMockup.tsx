@@ -44,7 +44,7 @@ export default function CreatorDiscoveryMockup() {
 
   // Subtle SaaS product simulation: 1 -> 2 -> 3 creators selected -> activate workflow -> loop
   useEffect(() => {
-    const durations = [1600, 1600, 3000];
+    const durations = [2800, 2800, 4500];
     const timer = setTimeout(() => {
       setStep((prev) => (prev + 1) % 3);
     }, durations[step]);

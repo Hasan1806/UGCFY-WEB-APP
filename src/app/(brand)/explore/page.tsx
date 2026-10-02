@@ -18,12 +18,12 @@ import {
 
 // Optimized Cloudinary UGC assets
 const DEMO_UGC_VIDEOS = [
-  { id: "1", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558844/CN2466_H3_wlaaor.mp4", creator: "@sneha_ugc", category: "Beauty & Skincare", caption: "Premium serum daily hydration and morning glow wear test." },
-  { id: "2", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558837/CN2466_H2_uckgsc.mp4", creator: "@rohit_creates", category: "Tech Unboxing", caption: "Next-gen mechanical keyboard click sounds and build overview." },
-  { id: "3", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558830/CN2466_H1_i01seg.mp4", creator: "@tanvi_fits", category: "Fitness & Health", caption: "High intensity jump rope conditioning and stretching routine." },
-  { id: "4", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558770/16_ajescr.mp4", creator: "@aman_vlogs", category: "Lifestyle & Travel", caption: "Aesthetic cafe hopping vlog in New Delhi with scenic edits." },
-  { id: "5", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558781/20_bhwhb0.mp4", creator: "@ria_reviews", category: "Fashion Lookbook", caption: "Korean inspired minimal summer linen outfit styling tips." },
-  { id: "6", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558796/22_qho17h.mp4", creator: "@kabir_digital", category: "Gadget Review", caption: "Noise cancelling earbud stress test and audio profiles." }
+  { id: "1", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558844/CN2466_H3_wlaaor.mp4", creator: "@tarinipeshawaria", category: "Beauty & Skincare", caption: "Premium serum daily hydration and morning glow wear test." },
+  { id: "2", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558837/CN2466_H2_uckgsc.mp4", creator: "@techburner", category: "Tech Unboxing", caption: "Next-gen mechanical keyboard click sounds and build overview." },
+  { id: "3", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558830/CN2466_H1_i01seg.mp4", creator: "@pranit_shilimkar", category: "Fitness & Health", caption: "High intensity jump rope conditioning and stretching routine." },
+  { id: "4", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558770/16_ajescr.mp4", creator: "@curly.tales", category: "Lifestyle & Travel", caption: "Aesthetic cafe hopping vlog in New Delhi with scenic edits." },
+  { id: "5", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558781/20_bhwhb0.mp4", creator: "@komalpandeyofficial", category: "Fashion Lookbook", caption: "Korean inspired minimal summer linen outfit styling tips." },
+  { id: "6", url: "https://res.cloudinary.com/dxlv2xnms/video/upload/v1780558796/22_qho17h.mp4", creator: "@technicalguruji", category: "Gadget Review", caption: "Noise cancelling earbud stress test and audio profiles." }
 ];
 
 const filterPills = ["All", "Beauty & Skincare", "Tech Unboxing", "Fitness & Health", "Lifestyle & Travel", "Fashion Lookbook", "Gadget Review"];

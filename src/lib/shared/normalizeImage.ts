@@ -5,6 +5,21 @@ export function normalizeImageUrl(value: unknown): string | null {
 
   if (!trimmed) return null;
 
+  // Filter out stock/AI-generated placeholder image domains
+  const disallowedDomains = [
+    "images.unsplash.com",
+    "unsplash.com",
+    "thispersondoesnotexist",
+    "generated.photos",
+    "placeholder.com",
+    "via.placeholder.com",
+    "picsum.photos",
+  ];
+
+  if (disallowedDomains.some((d) => trimmed.toLowerCase().includes(d))) {
+    return null;
+  }
+
   if (
     trimmed.startsWith("http://") ||
     trimmed.startsWith("https://") ||

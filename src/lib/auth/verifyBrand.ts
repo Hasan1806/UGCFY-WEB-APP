@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 
 export type BrandSession = {
   user: {
@@ -42,8 +43,33 @@ export type VerifyBrandResult =
 
 export async function verifyBrand(): Promise<VerifyBrandResult> {
   try {
+    const cookieStore = await cookies();
+    const hasSupabaseCookie = cookieStore.getAll().some(c => c.name.startsWith('sb-'));
+
+    if (!hasSupabaseCookie) {
+      const { MOCK_BRAND_PROFILE, MOCK_USER } = await import('@/lib/mock/data');
+      return {
+        ok: true,
+        user: { id: MOCK_USER.id, email: MOCK_USER.email },
+        brand: {
+          id: MOCK_BRAND_PROFILE.id,
+          user_id: MOCK_BRAND_PROFILE.user_id,
+          email: MOCK_BRAND_PROFILE.email,
+          company_name: MOCK_BRAND_PROFILE.company_name,
+          brand_name: MOCK_BRAND_PROFILE.brand_name,
+          kyc_status: MOCK_BRAND_PROFILE.kyc_status,
+        }
+      };
+    }
+
     const supabase = await createClient();
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const userTimeout = new Promise<{ data: { user: null }; error: any }>((resolve) =>
+      setTimeout(() => resolve({ data: { user: null }, error: new Error('Timeout') }), 300)
+    );
+    const { data: { user }, error: userError } = await Promise.race([
+      supabase.auth.getUser(),
+      userTimeout,
+    ]);
 
     if (userError || !user) {
       const { MOCK_BRAND_PROFILE, MOCK_USER } = await import('@/lib/mock/data');

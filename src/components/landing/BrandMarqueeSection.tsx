@@ -239,19 +239,13 @@ export default function BrandMarqueeSection() {
         <div className="flex overflow-hidden w-full">
           <div
             className="flex w-max items-center animate-marquee hover:[animation-play-state:paused] brand-marquee-track py-1"
-            style={{ animationDuration: "36s" }}
+            style={{ animationDuration: "36s", transform: "translate3d(0, 0, 0)" }}
           >
             {marqueeBrandsRow1.map((brand, idx) => (
               <BrandItemView key={`r1-a-${idx}`} brand={brand} />
             ))}
             {marqueeBrandsRow1.map((brand, idx) => (
               <BrandItemView key={`r1-b-${idx}`} brand={brand} />
-            ))}
-            {marqueeBrandsRow1.map((brand, idx) => (
-              <BrandItemView key={`r1-c-${idx}`} brand={brand} />
-            ))}
-            {marqueeBrandsRow1.map((brand, idx) => (
-              <BrandItemView key={`r1-d-${idx}`} brand={brand} />
             ))}
           </div>
         </div>
@@ -260,19 +254,13 @@ export default function BrandMarqueeSection() {
         <div className="flex overflow-hidden w-full">
           <div
             className="flex w-max items-center animate-marquee hover:[animation-play-state:paused] brand-marquee-track py-1"
-            style={{ animationDuration: "44s", animationDirection: "reverse" }}
+            style={{ animationDuration: "44s", animationDirection: "reverse", transform: "translate3d(0, 0, 0)" }}
           >
             {marqueeBrandsRow2.map((brand, idx) => (
               <BrandItemView key={`r2-a-${idx}`} brand={brand} />
             ))}
             {marqueeBrandsRow2.map((brand, idx) => (
               <BrandItemView key={`r2-b-${idx}`} brand={brand} />
-            ))}
-            {marqueeBrandsRow2.map((brand, idx) => (
-              <BrandItemView key={`r2-c-${idx}`} brand={brand} />
-            ))}
-            {marqueeBrandsRow2.map((brand, idx) => (
-              <BrandItemView key={`r2-d-${idx}`} brand={brand} />
             ))}
           </div>
         </div>

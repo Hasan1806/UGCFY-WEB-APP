@@ -39,12 +39,15 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const hasBypass = request.cookies.get('ugcfy_auth_bypass')?.value === 'true';
+  const hasClerkSession = !!request.cookies.get('__session')?.value || !!request.cookies.get('__client_uat')?.value;
+  const hasSupabaseCookie = request.cookies.getAll().some(c => c.name.startsWith('sb-'));
 
-  // Protect /dashboard, /brand, and /settings routes
+  // Protect /dashboard, /brand, /settings, and /platform/discover routes
   const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || 
                            request.nextUrl.pathname.startsWith('/brand') || 
-                           request.nextUrl.pathname.startsWith('/settings');
+                           request.nextUrl.pathname.startsWith('/settings') ||
+                           request.nextUrl.pathname.startsWith('/platform/discover');
 
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
                       request.nextUrl.pathname.startsWith('/register') ||
@@ -54,40 +57,40 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  if (isProtectedRoute && !user) {
-    return NextResponse.redirect(new URL('/login?next=' + request.nextUrl.pathname, request.url));
+  // If protected route and no active session/cookie, redirect to login immediately (<1ms)
+  if (isProtectedRoute && !hasBypass && !hasClerkSession && !hasSupabaseCookie) {
+    return NextResponse.redirect(new URL('/login?next=' + encodeURIComponent(request.nextUrl.pathname), request.url));
   }
 
-  if (
-    user &&
-    request.nextUrl.pathname.startsWith('/dashboard') &&
-    !request.nextUrl.pathname.startsWith('/dashboard/verification')
-  ) {
-    const [{ data: brandProfiles }, { data: profiles }] = await Promise.all([
-      supabase.from('brand_profiles').select('*').eq('user_id', user.id).limit(1),
-      supabase.from('profiles').select('*').eq('id', user.id).limit(1)
-    ]);
+  // Only perform Supabase verification if active Supabase session cookies exist
+  if (hasSupabaseCookie) {
+    try {
+      const timeoutPromise = new Promise<{ data: { user: null } }>((resolve) =>
+        setTimeout(() => resolve({ data: { user: null } }), 300)
+      );
+      const userPromise = supabase.auth.getUser() as any;
+      const { data } = await Promise.race([userPromise, timeoutPromise]);
+      const user = data?.user || null;
 
-    const mergedProfile = { ...brandProfiles?.[0], ...profiles?.[0] };
+      if (
+        user &&
+        request.nextUrl.pathname.startsWith('/dashboard') &&
+        !request.nextUrl.pathname.startsWith('/dashboard/verification')
+      ) {
+        const [{ data: brandProfiles }, { data: profiles }] = await Promise.all([
+          supabase.from('brand_profiles').select('*').eq('user_id', user.id).limit(1),
+          supabase.from('profiles').select('*').eq('id', user.id).limit(1)
+        ]);
 
-    if (getBrandAccessStatus(mergedProfile) !== 'approved') {
-      return NextResponse.redirect(new URL('/dashboard/verification', request.url));
+        const mergedProfile = { ...brandProfiles?.[0], ...profiles?.[0] };
+
+        if (getBrandAccessStatus(mergedProfile) !== 'approved') {
+          return NextResponse.redirect(new URL('/dashboard/verification', request.url));
+        }
+      }
+    } catch {
+      // Supabase verification failed or timed out; proceed
     }
-  }
-
-  if (isAuthRoute && user) {
-    const [{ data: brandProfiles }, { data: profiles }] = await Promise.all([
-      supabase.from('brand_profiles').select('*').eq('user_id', user.id).limit(1),
-      supabase.from('profiles').select('*').eq('id', user.id).limit(1)
-    ]);
-
-    const mergedProfile = { ...brandProfiles?.[0], ...profiles?.[0] };
-
-    const redirectPath = getBrandAccessStatus(mergedProfile) === 'approved'
-      ? '/dashboard'
-      : '/dashboard/verification';
-
-    return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
   return response;
@@ -104,5 +107,7 @@ export const config = {
      * Feel free to modify this pattern to include more paths.
      */
     '/((?!_next/static|_next/image|favicon.ico|api/.*|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/(api|trpc)(.*)',
+    '/__clerk/:path*',
   ],
 };

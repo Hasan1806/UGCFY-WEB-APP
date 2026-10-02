@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-inter: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   
   --color-bg-dark: #0A0A0A;
   --color-bg-light: #FFFFFF;
@@ -54,6 +53,11 @@ body {
   font-family: var(--font-inter);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
 }
 
 @layer base {
@@ -183,6 +187,15 @@ body {
     gap: 48px;
     animation: var(--animate-marquee);
     width: max-content;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+
+  .brand-marquee-track {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
   }
 
   /* FAQ Accordion */

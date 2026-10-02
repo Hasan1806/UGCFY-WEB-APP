@@ -1,8 +1,12 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "framer-motion", "@ai-sdk/react", "@supabase/ssr"],
+  },
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
@@ -11,6 +15,18 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "**.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "**.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.fbcdn.net",
+      },
+      {
+        protocol: "https",
+        hostname: "**.instagram.com",
       },
     ],
   },

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSignUp } from "@clerk/nextjs";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
@@ -116,25 +117,21 @@ export default function RegisterPage() {
     }
   };
 
+  const { isLoaded: isSignUpLoaded, signUp } = useSignUp() as any;
+
   const handleGoogleLogin = async () => {
     setErrorMsg("");
+    if (!isSignUpLoaded) return;
     setLoadingProvider("google");
 
-    const origin = window.location.origin;
-    console.log("Google OAuth redirectTo:", `${origin}/auth/callback`);
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${origin}/auth/callback`,
-        queryParams: {
-          access_type: "offline",
-          prompt: "consent",
-        },
-      },
-    });
-
-    if (error) {
+    try {
+      await signUp.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/dashboard",
+      });
+    } catch (error) {
+      console.error("Clerk Google Sign Up error:", error);
       setErrorMsg("Google sign-in could not be completed. Please try again.");
       setLoadingProvider(null);
     }

@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Building2, Sparkles, ChevronRight } from "lucide-react";
+import { UserButton, Show } from "@clerk/nextjs";
 import RequestAccessModal from "./RequestAccessModal";
 import { MegaMenuPanel, PLATFORM_DATA, ECOSYSTEM_DATA, RESOURCES_DATA, SERVICES_DATA, COMPANY_DATA } from "./MegaMenu";
 
@@ -76,8 +77,8 @@ export default function Navbar({ theme = "light", hideOnScroll = false }: Navbar
       try {
         const { createClient } = await import("@/lib/supabase/client");
         const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        setIsAuthenticated(!!user);
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session?.user);
       } catch (err) {
         console.error("Auth check failed:", err);
       } finally {
@@ -210,33 +211,39 @@ export default function Navbar({ theme = "light", hideOnScroll = false }: Navbar
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Link 
-              href="/login" 
-              className={`font-bold text-[13.5px] px-5 py-2.5 rounded-xl border transition-all ${
-                isLight 
-                  ? 'bg-white/95 hover:bg-white text-slate-900 hover:text-brand-red-600 border-rose-300/90 shadow-[0_2px_10px_rgba(225,29,72,0.08)] hover:shadow-[0_4px_16px_rgba(225,29,72,0.15)] hover:border-rose-400 active:scale-[0.98]' 
-                  : 'btn-white hover:bg-neutral-100'
-              }`}
-            >
-              I am a Brand
-            </Link>
-            {!loadingAuth && (
-              isAuthenticated ? (
+            <Show when="signed-in">
+              <div className="flex items-center gap-3">
                 <Link 
                   href="/dashboard" 
-                  className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] text-white font-bold text-[13.5px] px-6 py-2.5 rounded-xl shadow-[0_4px_18px_rgba(225,29,72,0.36)] hover:shadow-[0_6px_24px_rgba(225,29,72,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all ml-2"
+                  className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] text-white font-bold text-[13.5px] px-5 py-2.5 rounded-xl shadow-[0_4px_18px_rgba(225,29,72,0.36)] hover:shadow-[0_6px_24px_rgba(225,29,72,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
-                  Brand Portal
+                  Dashboard
                 </Link>
-              ) : (
-                <Link 
-                  href="/get-started" 
-                  className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] bg-[length:200%_auto] hover:bg-right text-white font-bold text-[13.5px] px-6 py-2.5 rounded-xl shadow-[0_4px_20px_rgba(225,29,72,0.38)] hover:shadow-[0_6px_28px_rgba(225,29,72,0.55)] hover:scale-[1.02] active:scale-[0.98] transition-all"
-                >
-                  Get Started
-                </Link>
-              )
-            )}
+                <div className="pl-1 flex items-center">
+                  <UserButton />
+                </div>
+              </div>
+            </Show>
+
+            <Show when="signed-out">
+              <Link 
+                href="/login" 
+                className={`font-bold text-[13.5px] px-5 py-2.5 rounded-xl border transition-all ${
+                  isLight 
+                    ? 'bg-white/95 hover:bg-white text-slate-900 hover:text-brand-red-600 border-rose-300/90 shadow-[0_2px_10px_rgba(225,29,72,0.08)] hover:shadow-[0_4px_16px_rgba(225,29,72,0.15)] hover:border-rose-400 active:scale-[0.98]' 
+                    : 'btn-white hover:bg-neutral-100'
+                }`}
+              >
+                Sign In
+              </Link>
+
+              <Link 
+                href="/get-started" 
+                className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] bg-[length:200%_auto] hover:bg-right text-white font-bold text-[13.5px] px-6 py-2.5 rounded-xl shadow-[0_4px_20px_rgba(225,29,72,0.38)] hover:shadow-[0_6px_28px_rgba(225,29,72,0.55)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                Get Started
+              </Link>
+            </Show>
           </div>
 
           {/* MOBILE MENU TOGGLE */}
@@ -337,37 +344,41 @@ export default function Navbar({ theme = "light", hideOnScroll = false }: Navbar
 
             {/* Bottom Actions Area */}
             <div className={`mt-8 pt-6 border-t flex flex-col gap-3 shrink-0 ${isLight ? 'border-rose-200/90' : 'border-white/10'}`}>
-              <Link
-                href="/login"
-                className={`text-center font-bold py-3 rounded-xl transition-all block text-sm border ${
-                  isLight 
-                    ? 'bg-white text-slate-900 border-rose-300/90 shadow-[0_2px_8px_rgba(225,29,72,0.06)] hover:bg-rose-50 active:scale-[0.98]' 
-                    : 'text-black bg-white hover:bg-neutral-100'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                I am a Brand
-              </Link>
-              
-              {!loadingAuth && (
-                isAuthenticated ? (
-                  <Link
-                    href="/dashboard"
-                    className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] text-white w-full py-3 text-center block font-bold text-sm rounded-xl shadow-[0_4px_16px_rgba(239,35,60,0.28)]"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Brand Portal
-                  </Link>
-                ) : (
-                  <Link
-                    href="/get-started"
-                    className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] bg-[length:200%_auto] text-white w-full py-3 text-center block font-bold text-sm rounded-xl shadow-[0_4px_18px_rgba(239,35,60,0.35)] hover:shadow-[0_6px_22px_rgba(239,35,60,0.5)] active:scale-[0.98] transition-all"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Get Started
-                  </Link>
-                )
-              )}
+              <Show when="signed-in">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="text-sm font-semibold text-slate-700">Account</span>
+                  <UserButton />
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] text-white w-full py-3 text-center block font-bold text-sm rounded-xl shadow-[0_4px_16px_rgba(239,35,60,0.28)]"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              </Show>
+
+              <Show when="signed-out">
+                <Link
+                  href="/login"
+                  className={`text-center font-bold py-3 rounded-xl transition-all block text-sm border ${
+                    isLight 
+                      ? 'bg-white text-slate-900 border-rose-300/90 shadow-[0_2px_8px_rgba(225,29,72,0.06)] hover:bg-rose-50 active:scale-[0.98]' 
+                      : 'text-black bg-white hover:bg-neutral-100'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+
+                <Link
+                  href="/get-started"
+                  className="bg-gradient-to-r from-[#E11D48] via-[#EF233C] to-[#BE123C] bg-[length:200%_auto] text-white w-full py-3 text-center block font-bold text-sm rounded-xl shadow-[0_4px_18px_rgba(239,35,60,0.35)] hover:shadow-[0_6px_22px_rgba(239,35,60,0.5)] active:scale-[0.98] transition-all"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Get Started
+                </Link>
+              </Show>
             </div>
           </div>
         </div>

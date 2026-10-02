@@ -1,51 +1,47 @@
-"use client";
-
-import React from "react";
+import React, { Suspense } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PremiumHero from "@/components/ui/PremiumHero";
-import PremiumStats from "@/components/ui/PremiumStats";
-import PremiumAlternatingFeatures from "@/components/ui/PremiumAlternatingFeatures";
-import PremiumCtaSection from "@/components/ui/PremiumCtaSection";
+import InstagramDiscoverExperience from "@/components/discover/InstagramDiscoverExperience";
+import CreatorSkeleton from "@/components/discover/CreatorSkeleton";
 
-export default function Page() {
+export const metadata = {
+  title: "Discover Instagram Creators | UGC FY",
+  description:
+    "Find and filter high-performing Indian Instagram creators for your brand campaigns by niche, follower count, location, and engagement rate.",
+};
+
+export default async function PlatformDiscoverPage() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    redirect("/login?next=/platform/discover");
+  }
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col antialiased selection:bg-[#111111] selection:text-white">
+      {/* Top Navbar */}
       <Navbar theme="dark" />
-      
-      <main className="flex-1">
-        <PremiumHero 
-          title="Discover Authentic Creators"
-          highlight="At Scale"
-          description="Tap into our proprietary AI-driven engine to find, filter, and connect with high-performing UGC creators perfectly aligned with your brand demographics."
-          icon={null}
-        />
-        
-        <PremiumAlternatingFeatures 
-          features={[
-            {
-              title: "Lookalike Audience Matching",
-              description: "Stop guessing. Our AI analyzes your best-performing ad sets and matches you with creators whose followers index highest for your specific target demographic and purchasing behavior.",
-              bullets: ["Demographic indexing","Purchasing behavior analysis","Lookalike scaling"],
-              imagePlaceholderText: "AI Match Dashboard"
-            },
-            {
-              title: "Pre-Vetted Professionalism",
-              description: "Every creator on UGC FY passes a 5-point verification check for engagement authenticity, past brand performance, and delivery reliability before they ever show up in your search.",
-              bullets: ["Fake follower detection","Historical ROAS tracking","Delivery rate metrics"],
-              imagePlaceholderText: "Creator Verification Profile"
-            }
-          ]}
-        />
-        
-        <PremiumStats stats={[{"value":"10M+","label":"Creators"},{"value":"4.8/5","label":"Avg Rating"},{"value":"98%","label":"Response Rate"},{"value":"24h","label":"Avg Turnaround"}]} />
-        
-        <PremiumCtaSection 
-          title="Ready to find your next star?"
-          description="Join 10,000+ brands scaling their UGC production."
-        />
+
+      {/* Main Discover Workspace */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <Suspense
+          fallback={
+            <div className="space-y-6 pt-6">
+              <div className="h-16 w-full max-w-md rounded-xl bg-[#EFEFEF] animate-pulse" />
+              <div className="h-12 w-full max-w-2xl rounded-xl bg-[#EFEFEF] animate-pulse" />
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-4">
+                <CreatorSkeleton count={6} />
+              </div>
+            </div>
+          }
+        >
+          <InstagramDiscoverExperience />
+        </Suspense>
       </main>
 
+      {/* Platform Footer */}
       <Footer />
     </div>
   );
